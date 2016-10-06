@@ -9,6 +9,8 @@
     "react": "15.3.2",
     "react-native": "0.34.1",
     "react-native-keyboard-aware-scroll-view": "^0.2.1",
+    "react-native-loader": "^1.1.0",
+    "realm": "^0.14.3",
     "tcomb-form-native": "0.5.3"
   }
 }
