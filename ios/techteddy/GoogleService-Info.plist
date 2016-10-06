@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>40908068737-4t2vlap60ukc212uaunqkdra4dqik2qt.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.40908068737-4t2vlap60ukc212uaunqkdra4dqik2qt</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCdvLtbFCyS5yS1jPkxZr7tc-SepLrcLao</string>
+	<key>GCM_SENDER_ID</key>
+	<string>40908068737</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>org.reactjs.native.example.techteddy</string>
+	<key>PROJECT_ID</key>
+	<string>techteddy-250ce</string>
+	<key>STORAGE_BUCKET</key>
+	<string>techteddy-250ce.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true/>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:40908068737:ios:8bfefa0893bfc89f</string>
+	<key>DATABASE_URL</key>
+	<string>https://techteddy-250ce.firebaseio.com</string>
+</dict>
+</plist>

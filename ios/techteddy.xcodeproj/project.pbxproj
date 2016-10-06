@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -22,9 +23,13 @@
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		1630897D6C334DEDA5A8E9DA /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E61C2FAAC4F46C98426F906 /* libc++.tbd */; };
+		2F7A51C09BD9FD87B0CD041A /* Pods_techteddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89F9324A85E6BB1D2CA70518 /* Pods_techteddy.framework */; };
 		82CA05451DA6868C007E8608 /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CA053A1DA6867F007E8608 /* libART.a */; };
 		82CA05901DA6925C007E8608 /* libRealmReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CA058F1DA690E5007E8608 /* libRealmReact.a */; };
+		82CA05D81DA6E0C3007E8608 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 82CA05D71DA6E0C3007E8608 /* GoogleService-Info.plist */; };
+		82CA062D1DA6E624007E8608 /* libRNFIRMessaging.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CA05C81DA6CD07007E8608 /* libRNFIRMessaging.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		C83C94E2235A1EB09B35972B /* Pods_techteddyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA3E2EFD332ED51229BC3483 /* Pods_techteddyTests.framework */; };
 		EB1F28B18A374D34A30807E2 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C64ACBE659DD4C6B9FE5F6A9 /* libz.tbd */; };
 /* End PBXBuildFile section */
 
@@ -113,6 +118,13 @@
 			remoteGlobalIDString = F60690131CA2766F0003FB26;
 			remoteInfo = RealmReact;
 		};
+		82CA05C71DA6CD07007E8608 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BEAC14303EFD42708D711789 /* RNFIRMessaging.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNFIRMessaging;
+		};
 		832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */;
@@ -144,10 +156,19 @@
 		13BF3EB6CD8B460489EA0649 /* RealmReact.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RealmReact.xcodeproj; path = "../node_modules/realm/react-native/ios/RealmReact.xcodeproj"; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		2E61C2FAAC4F46C98426F906 /* libc++.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		3A137D58004F9B94ED4D2F61 /* Pods-techteddyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-techteddyTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-techteddyTests/Pods-techteddyTests.release.xcconfig"; sourceTree = "<group>"; };
+		53C09F7340E4EDDF0E85B61D /* Pods-techteddy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-techteddy.release.xcconfig"; path = "Pods/Target Support Files/Pods-techteddy/Pods-techteddy.release.xcconfig"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		82CA05351DA6867F007E8608 /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
+		82CA05D71DA6E0C3007E8608 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "techteddy/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		82CA06711DA6FE0A007E8608 /* techteddy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = techteddy.entitlements; path = techteddy/techteddy.entitlements; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
+		89F9324A85E6BB1D2CA70518 /* Pods_techteddy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_techteddy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BA3E2EFD332ED51229BC3483 /* Pods_techteddyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_techteddyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BEAC14303EFD42708D711789 /* RNFIRMessaging.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFIRMessaging.xcodeproj; path = "../node_modules/react-native-fcm/ios/RNFIRMessaging.xcodeproj"; sourceTree = "<group>"; };
+		C3D5EBDF6A348CC0451E40BD /* Pods-techteddyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-techteddyTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-techteddyTests/Pods-techteddyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C64ACBE659DD4C6B9FE5F6A9 /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		F87D9BBCC50811E789E3F167 /* Pods-techteddy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-techteddy.debug.xcconfig"; path = "Pods/Target Support Files/Pods-techteddy/Pods-techteddy.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,6 +177,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */,
+				C83C94E2235A1EB09B35972B /* Pods_techteddyTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -177,6 +199,8 @@
 				82CA05901DA6925C007E8608 /* libRealmReact.a in Frameworks */,
 				1630897D6C334DEDA5A8E9DA /* libc++.tbd in Frameworks */,
 				EB1F28B18A374D34A30807E2 /* libz.tbd in Frameworks */,
+				82CA062D1DA6E624007E8608 /* libRNFIRMessaging.a in Frameworks */,
+				2F7A51C09BD9FD87B0CD041A /* Pods_techteddy.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,9 +283,11 @@
 		13B07FAE1A68108700A75B9A /* techteddy */ = {
 			isa = PBXGroup;
 			children = (
+				82CA06711DA6FE0A007E8608 /* techteddy.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
+				82CA05D71DA6E0C3007E8608 /* GoogleService-Info.plist */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
@@ -302,6 +328,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		82CA05B81DA6CD07007E8608 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				82CA05C81DA6CD07007E8608 /* libRNFIRMessaging.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -317,6 +351,7 @@
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				13BF3EB6CD8B460489EA0649 /* RealmReact.xcodeproj */,
+				BEAC14303EFD42708D711789 /* RNFIRMessaging.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -337,6 +372,7 @@
 				00E356EF1AD99517003FC87E /* techteddyTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				D8BE5838AE184D49BBDA1C2D /* Frameworks */,
+				FFBFBE9F4B4B2DBF5B6C4E4D /* Pods */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -356,8 +392,21 @@
 			children = (
 				2E61C2FAAC4F46C98426F906 /* libc++.tbd */,
 				C64ACBE659DD4C6B9FE5F6A9 /* libz.tbd */,
+				89F9324A85E6BB1D2CA70518 /* Pods_techteddy.framework */,
+				BA3E2EFD332ED51229BC3483 /* Pods_techteddyTests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FFBFBE9F4B4B2DBF5B6C4E4D /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				F87D9BBCC50811E789E3F167 /* Pods-techteddy.debug.xcconfig */,
+				53C09F7340E4EDDF0E85B61D /* Pods-techteddy.release.xcconfig */,
+				C3D5EBDF6A348CC0451E40BD /* Pods-techteddyTests.debug.xcconfig */,
+				3A137D58004F9B94ED4D2F61 /* Pods-techteddyTests.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -367,9 +416,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "techteddyTests" */;
 			buildPhases = (
+				A7A6FE4D826568D2A24EC958 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
+				500A6FA9B061999D470141CA /* [CP] Embed Pods Frameworks */,
+				956DD293871A010E7D82AA7C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -385,10 +437,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "techteddy" */;
 			buildPhases = (
+				98091D4D9DA7B332A4F4B5B8 /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				4198BC0A4DDAC2D0CB98FCD5 /* [CP] Embed Pods Frameworks */,
+				12DE2A44704F92513B7DB6E4 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -410,7 +465,19 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = PEQXUY3Z86;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
+					};
+					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = PEQXUY3Z86;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -473,6 +540,10 @@
 				{
 					ProductGroup = 82CA05801DA690E5007E8608 /* Products */;
 					ProjectRef = 13BF3EB6CD8B460489EA0649 /* RealmReact.xcodeproj */;
+				},
+				{
+					ProductGroup = 82CA05B81DA6CD07007E8608 /* Products */;
+					ProjectRef = BEAC14303EFD42708D711789 /* RNFIRMessaging.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -561,6 +632,13 @@
 			remoteRef = 82CA058E1DA690E5007E8608 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		82CA05C81DA6CD07007E8608 /* libRNFIRMessaging.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFIRMessaging.a;
+			remoteRef = 82CA05C71DA6CD07007E8608 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		832341B51AAA6A8300B99B32 /* libRCTText.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -584,6 +662,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				82CA05D81DA6E0C3007E8608 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -603,6 +682,96 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/packager/react-native-xcode.sh";
+		};
+		12DE2A44704F92513B7DB6E4 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-techteddy/Pods-techteddy-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4198BC0A4DDAC2D0CB98FCD5 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-techteddy/Pods-techteddy-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		500A6FA9B061999D470141CA /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-techteddyTests/Pods-techteddyTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		956DD293871A010E7D82AA7C /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-techteddyTests/Pods-techteddyTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		98091D4D9DA7B332A4F4B5B8 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		A7A6FE4D826568D2A24EC958 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -649,8 +818,10 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C3D5EBDF6A348CC0451E40BD /* Pods-techteddyTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = PEQXUY3Z86;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -661,6 +832,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/techteddy.app/techteddy";
@@ -669,14 +841,17 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3A137D58004F9B94ED4D2F61 /* Pods-techteddyTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = PEQXUY3Z86;
 				INFOPLIST_FILE = techteddyTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -686,15 +861,19 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F87D9BBCC50811E789E3F167 /* Pods-techteddy.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = techteddy/techteddy.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = PEQXUY3Z86;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../node_modules/realm/src/**",
+					"$(SRCROOT)/../node_modules/react-native-fcm/ios",
 				);
 				INFOPLIST_FILE = techteddy/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -704,20 +883,25 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = techteddy;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 53C09F7340E4EDDF0E85B61D /* Pods-techteddy.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = techteddy/techteddy.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = PEQXUY3Z86;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../node_modules/realm/src/**",
+					"$(SRCROOT)/../node_modules/react-native-fcm/ios",
 				);
 				INFOPLIST_FILE = techteddy/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -727,6 +911,7 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = techteddy;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -748,6 +933,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -770,6 +956,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../node_modules/realm/src/**",
+					"$(SRCROOT)/../node_modules/react-native-fcm/ios",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -795,6 +982,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -811,6 +999,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../node_modules/realm/src/**",
+					"$(SRCROOT)/../node_modules/react-native-fcm/ios",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;

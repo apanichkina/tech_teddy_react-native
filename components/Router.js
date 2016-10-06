@@ -12,7 +12,7 @@ import {
   Text,
   View,
 } from 'react-native';
-
+import FCM from 'react-native-fcm';
 import { Scene, Router, TabBar, Modal, Schema, Actions, Reducer, ActionConst } from 'react-native-router-flux'
 // import Error from './components/Error'
 // import Home from './components/Home'
@@ -38,19 +38,46 @@ class TabIcon extends React.Component {
 const reducerCreate = params=>{
     const defaultReducer = Reducer(params);
     return (state, action)=>{
-        console.log("ACTION:", action);
+        // console.log("ACTION:", action);
         return defaultReducer(state, action);
     }
 };
 
 export default class HelloPage extends React.Component {
+    componentDidMount() {
+        FCM.requestPermissions(); // for iOS
+        FCM.getFCMToken().then(token => {
+            console.log(token)
+            // store fcm token in your server
+        });
+        FCM.getInitialNotification().then(notif=>console.log(notif));
+        this.notificationUnsubscribe = FCM.on('notification', (notif) => {
+            // there are two parts of notif. notif.notification contains the notification payload, notif.data contains data payload
+            console.log(notif)
+            FCM.presentLocalNotification({
+            title: notif.sum,                     // as FCM payload
+            body: notif.msg}
+            )       
+            if(notif.local_notification){
+              //this is a local notification
+            }
+            if(notif.opened_from_tray){
+              //app is open/resumed because user clicked banner
+            }
+        });
+        this.refreshUnsubscribe = FCM.on('refreshToken', (token) => {
+            console.log(token)
+            // fcm token may not be available on first load, catch it here
+        });
+    }
+
     render() {
         return <Router createReducer={reducerCreate} sceneStyle={{backgroundColor:'#F7F7F7'}}>
             <Scene key="modal" component={Modal} >
                 <Scene key="root" hideNavBar={true}>
                     <Scene key="launcher"  component={Launcher}  title="Добро пожаловать!" initial />
                     <Scene key="signin"  component={SignIn}  title="Логин" />
-                    <Scene key="signup" component={SignUp} title="Регистрация" duration={1}/>
+                    <Scene key="signup" component={SignUp} title="Регистрация"/>
                 </Scene>
 
             </Scene>

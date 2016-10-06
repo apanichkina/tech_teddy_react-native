@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "40908068737",
+    "firebase_url": "https://techteddy-250ce.firebaseio.com",
+    "project_id": "techteddy-250ce",
+    "storage_bucket": "techteddy-250ce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:40908068737:android:35d4d2019e0c2053",
+        "android_client_info": {
+          "package_name": "com.techteddy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "40908068737-mshssl6pplh6bvdj03kdqbc120p8hb6i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHorFttp6bMF9USRkjihXFvNIw5SV0mSQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

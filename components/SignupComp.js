@@ -16,11 +16,22 @@ import {
 
     var t = require('tcomb-form-native');
     var Form = t.form.Form;
+
+var Password = t.refinement(t.String, function(str) {return str.length>=6})
+Password.getValidationErrorMessage = function(value, path, context){
+    console.log("/////////////////////value")
+    console.log(value)
+     console.log("/////////////////////path")
+    console.log(path)
+     console.log("/////////////////////context")
+    console.log(context)
+    return "мало симоволов"
+}
 // here we are: define your domain model
 var Person = t.struct({
     name: t.String,              // a required string
     email: t.String,  // an optional string
-    password1: t.String,               // a required number
+    password1: Password,               // a required number
     password2: t.String        // a boolean
 });
 
