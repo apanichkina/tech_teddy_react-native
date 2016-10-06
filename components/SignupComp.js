@@ -9,13 +9,13 @@ import {
     ScrollView,
     TouchableHighlight,
     Text } from 'react-native'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+    import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
+    import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
 
 
-var t = require('tcomb-form-native');
-var Form = t.form.Form;
+    var t = require('tcomb-form-native');
+    var Form = t.form.Form;
 // here we are: define your domain model
 var Person = t.struct({
     name: t.String,              // a required string
@@ -65,47 +65,41 @@ const Loader = React.createClass({
     render: function() {
         return (
             <View>
-                <Bars size={10} color='#8e44ad' />
+            <Bars size={10} color='#8e44ad' />
             </View>
-        );
+            );
     }
 });
 
 class SignUp extends Component {
     constructor(props) {
-        super(props);
-        this.state = {internet:false};
+    super(props);
+    this.state = {internet:false};
 
-    }
-    render() {
-        return (
-            <View ref='scroll'
-                  style={styles.container}
-                  viewIsInsideTabBar={true} keyboardShouldPersistTaps={true}>
-                { this.state.internet ? <Loader /> : null }
-                <Loader />
-                <Form
-                    ref="form"
-                    type={Person}
-                    options={options}
-                    />
+}
+render() {
+    return (
+        <View ref='scroll'
+        style={styles.container}
+        viewIsInsideTabBar={true} keyboardShouldPersistTaps={true}>
 
+        <Loader />
+        <Form
+        ref="form"
+        type={Person}
+        options={options}
+        />
 
-                <TouchableHighlight style={styles.button} onPress={this.onPress.bind(this)} underlayColor='#99d9f4'>
-
-                    <Text style={styles.buttonText}>Зарегистрироваться</Text>
-
-                </TouchableHighlight>
-
-
-
-            </View>
-
-
-
+        { this.state.internet ? 
+            <Loader style={styles.preloader} /> : 
+            <TouchableHighlight style={styles.button} onPress={this.onPress.bind(this)} underlayColor='#99d9f4'>
+            <Text style={styles.buttonText}>Зарегистрироваться</Text>
+            </TouchableHighlight> 
+        }
+        </View>
         );
-    }
-    onPress() {
+}
+onPress() {
         // call getValue() to get the values of the form
         var value = this.refs.form.getValue();
 
@@ -113,7 +107,7 @@ class SignUp extends Component {
             this.setState({
                 internet:true
             });
-            fetch('http://127.0.0.1:8080/api/user/register', {
+            fetch('http://hardteddy.ru/api/user/register', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -126,49 +120,55 @@ class SignUp extends Component {
                     password2: value.password2
                 })
             }).then((response) => response.json())
-                .then((responseJson) => {
-                    //this.setState({
-                    //  internet:false
-                    //});
+            .then((responseJson) => {
+                    this.setState({
+                     internet:false
+                    });
                     console.log(responseJson)
                     console.log(responseJson.status)
                     console.log(responseJson.body.email)
                     console.log(responseJson.body.password)
                     console.log(responseJson.body.login)
                 })
-                .catch((error) => {
-                    console.log(error)
-                });
+            .catch((error) => {
+                this.setState({
+                     internet:false
+                    });
+                console.log(error)
+            });
         }
 
     }}
 
-var styles = StyleSheet.create({
-    container: {
-        marginTop: 50,
-        padding: 20,
-        backgroundColor: '#ffffff'
-    },
-    title: {
-        fontSize: 30,
-        alignSelf: 'center',
-        marginBottom: 30
-    },
-    buttonText: {
-        fontSize: 18,
-        color: 'white',
-        alignSelf: 'center'
-    },
-    button: {
-        height: 36,
-        backgroundColor: '#8e44ad',
-        borderColor: '#8e44ad',
-        borderWidth: 3,
-        borderRadius: 3,
-        marginBottom: 10,
-        alignSelf: 'stretch',
-        justifyContent: 'center'
-    }
-})
+    var styles = StyleSheet.create({
+        container: {
+            marginTop: 50,
+            padding: 20,
+            backgroundColor: '#ffffff'
+        },
+        title: {
+            fontSize: 30,
+            alignSelf: 'center',
+            marginBottom: 30
+        },
+        buttonText: {
+            fontSize: 18,
+            color: 'white',
+            alignSelf: 'center'
+        },
+        preloader: {
+            alignSelf: 'center'
+        },
+        button: {
+            height: 36,
+            backgroundColor: '#8e44ad',
+            borderColor: '#8e44ad',
+            borderWidth: 3,
+            borderRadius: 3,
+            marginBottom: 10,
+            alignSelf: 'stretch',
+            justifyContent: 'center'
+        }
+    })
 
-module.exports = SignUp;
+    module.exports = SignUp;
