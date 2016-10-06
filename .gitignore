@@ -29,7 +29,7 @@ project.xcworkspace
 .gradle
 local.properties
 
-# node.js
+# node.components
 #
 node_modules/
 npm-debug.log

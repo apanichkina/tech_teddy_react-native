@@ -8,4 +8,8 @@ npm install
 
 # Запустите проект
 npm start
+
+# Запустите приложение на android
+react-native run-android
+
 ```

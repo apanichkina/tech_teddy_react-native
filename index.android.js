@@ -1,6 +1,6 @@
-import React from 'react'
-import { AppRegistry } from 'react-native'
+'use strict';
+import { AppRegistry } from 'react-native';
 
-import App from './src/core'
+import HelloPage from './components/Router';
 
-AppRegistry.registerComponent('techteddy', () => App)
+AppRegistry.registerComponent('techteddy', () => HelloPage);
