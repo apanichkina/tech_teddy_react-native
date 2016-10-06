@@ -9,34 +9,56 @@ import {
     ScrollView,
     TouchableHighlight,
     Text } from 'react-native'
-    import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
 
-    import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
 
+var t = require('tcomb-form-native');
+var Form = t.form.Form;
 
-    var t = require('tcomb-form-native');
-    var Form = t.form.Form;
+var tv = require('tcomb-validation');
+var validate = tv.validate;
+
+var regExpLogin = new RegExp("^[a-z0-9_-]{3,16}$", 'i');
+var regExpEmail = new RegExp(/.+@.+\..+/i);
+var regExpPassword = new RegExp("^.{6,}$", 'i');
+var Name = t.refinement(t.String, function (str) { return str.length >= 3 &&  str.length <= 16 && regExpLogin.test(str)});
+Name.getValidationErrorMessage = function (value, path, context) {
+    return 'неверный формат логина';
+};
+var Email = t.refinement(t.String, function (str) { return regExpEmail.test(str)});
+Email.getValidationErrorMessage = function (value, path, context) {
+    return 'неверный формат почты';
+};
+var Password = t.refinement(t.String, function (str) { return str.length >= 6});
+Password.getValidationErrorMessage = function (value, path, context) {
+    return 'слишком мало символов';
+};
+
 // here we are: define your domain model
 var Person = t.struct({
-    name: t.String,              // a required string
-    email: t.String,  // an optional string
-    password1: t.String,               // a required number
-    password2: t.String        // a boolean
+    name: Name,              // a required string
+    email: Email,  // an optional string
+    password1: Password,               // a required number
+    password2: Password
 });
 
+
+
 var options = {
+
     fields: {
         name: {
             label: 'Логин:',
             placeholder:'Ваш изумительный логин',
             help: 'от 3 до 16 латинских букв и цифр',
-            error: 'Insert a valid email',
             underlineColorAndroid: "transparent"
         },
         email: {
             label: 'Email:',
             placeholder:'Ваша невероятная почта',
             underlineColorAndroid: "transparent"
+
         },
         password1: {
             label: 'Пароль:',
@@ -54,13 +76,7 @@ var options = {
     }
 };
 
-//function onPress() {
-//  // call getValue() to get the values of the form
-//  var value = this.refs.form.getValue();
-//  if (value) { // if validation fails, value will be null
-//    console.log(value); // value here is an instance of Person
-//  }
-//}
+
 const Loader = React.createClass({
     render: function() {
         return (
@@ -79,24 +95,25 @@ class SignUp extends Component {
 }
 render() {
     return (
-        <View ref='scroll'
-        style={styles.container}
-        viewIsInsideTabBar={true} keyboardShouldPersistTaps={true}>
+        <ScrollView>
+            <View ref='scroll'
+                style={styles.container}
+                viewIsInsideTabBar={true}
+                  keyboardShouldPersistTaps={true}>
+                <Loader />
+                <Form
+                    ref="form"
+                    type={Person}
+                    options={options}
+                    />
 
-        <Loader />
-        <Form
-        ref="form"
-        type={Person}
-        options={options}
-        />
-
-        { this.state.internet ? 
-            <Loader style={styles.preloader} /> : 
-            <TouchableHighlight style={styles.button} onPress={this.onPress.bind(this)} underlayColor='#99d9f4'>
-            <Text style={styles.buttonText}>Зарегистрироваться</Text>
-            </TouchableHighlight> 
-        }
-        </View>
+                { this.state.internet ? <Loader style={styles.preloader} /> :
+                <TouchableHighlight style={styles.button} onPress={this.onPress.bind(this)} underlayColor='#99d9f4'>
+                <Text style={styles.buttonText}>Зарегистрироваться</Text>
+                </TouchableHighlight>
+                }
+            </View>
+        </ScrollView>
         );
 }
 onPress() {
