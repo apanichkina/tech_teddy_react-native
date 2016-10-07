@@ -9,14 +9,10 @@ const propTypes = {
 };
 
 const TabIcon = (props) => (
-    //<Text
-    //    style={{ color: props.selected ? 'red' : 'black' }}
-    //    >
-    //    {props.title}
-    //</Text>
+
     <Image
-        style={{ color: props.selected ? 'red' : 'black' }}
-source={require(props.title)}
+        style={{ width: 35,height: 35, tintColor: props.selected ? '#8e44ad' : '#9E9E9E' }}
+source={require('../img/bluetooth_white_24dp.png')}
 />
 );
 
