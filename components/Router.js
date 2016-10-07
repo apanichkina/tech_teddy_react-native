@@ -23,7 +23,7 @@ import SignIn from './SigninComp'
 
 const Realm = require('realm');
 const realm = new Realm({
-    schema: [{name: 'Dog', properties: {name: 'string'}}]
+    schema: [{name: 'Token', primaryKey: 'name', properties: {name: 'string', token : 'string'}}]
 });
 
 
@@ -57,9 +57,18 @@ export default class HelloPage extends React.Component {
     }
 
     componentDidMount() {
+        let tokens = realm.objects('Token');
+        let FCMToken = tokens.filtered('name = "FCM"')
+        console.log(FCMToken.length)
         FCM.requestPermissions(); // for iOS
         FCM.getFCMToken().then(token => {
             console.log(token);
+            if (FCMToken.length == 0)
+            {
+            realm.write(() => {
+                realm.create('Token', {name: 'FCM', token:token});
+            });
+        }
             // store fcm token in your server
         });
         FCM.getInitialNotification().then(notif=>{
@@ -70,9 +79,6 @@ export default class HelloPage extends React.Component {
         FCM.on('notification', (notif) => {
             console.log("on notification:");
             console.log(notif);
-            realm.write(() => {
-                realm.create('Dog', {name: 'Rex'});
-            });
             FCM.presentLocalNotification({
             id: "UNIQ_ID_STRING",                               // (optional for instant notification)
             title: notif.sum,                     // as FCM payload

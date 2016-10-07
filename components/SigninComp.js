@@ -12,6 +12,12 @@ import {
 	import Button from 'react-native-button';
 	import Loader from './Loader.js'
 
+const Realm = require('realm');
+const realm = new Realm({
+    schema: [{name: 'Token', primaryKey: 'name', properties: {name: 'string', token : 'string'}}]
+});
+
+
 	var MessageBarAlert = require('react-native-message-bar').MessageBar;
 	var MessageBarManager = require('react-native-message-bar').MessageBarManager;
 
@@ -63,7 +69,6 @@ import {
 		constructor(props) {
 			super(props);
 			this.state = {internet:false};
-
 		}
 
 		onChange(value) {
@@ -114,6 +119,14 @@ import {
         	this.setState({
         		internet:true
         	});
+        	let tokens = realm.objects('Token');
+        	let FCMToken = tokens.filtered('name = "FCM"')
+
+        	let FCMstr = ""
+        	if (FCMToken.length == 1){
+        		FCMstr = FCMToken[0].token
+        	}
+
         	fetch('http://hardteddy.ru/api/user/login', {
         		method: 'POST',
         		
@@ -123,7 +136,8 @@ import {
         		},
         		body: JSON.stringify({
         			name: value.name,
-        			password: value.password
+        			password: value.password,
+        			fcm: FCMstr
         		})
         	}).then((response) => response.json())
         	.then((responseJson) => {
