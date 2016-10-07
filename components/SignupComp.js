@@ -60,7 +60,7 @@ function samePasswords(x) {
 var Type = t.subtype(Person, samePasswords);
 Type.getValidationErrorMessage = function (value) {
   if (!samePasswords(value)) {
-    return 'Пароли не должны совпадать';
+    return 'Пароли должны совпадать';
 }
 };
 
@@ -128,10 +128,10 @@ render() {
       forceFocusField       = { this.state.focusField }
       scrollPadding         = { 10 }
       >
-          <Loader/>
+    
       <Form
       ref="form"
-      type={Person}
+      type={Type}
       options={options}
       value={this.state.value}
       onChange={this.onChange.bind(this)}
