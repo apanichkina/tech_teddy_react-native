@@ -38,8 +38,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: 'white',
-        padding:20
+        backgroundColor: '#ffffff',
+        padding: 20
     },
     containerIcon: {
         justifyContent: 'center',
@@ -68,15 +68,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#8e44ad',
         borderRadius: 3,
         borderWidth: 3,
-        padding:10
+        padding: 10
     },
     buttonStyle7: {
         borderColor: '#8e44ad',
-        backgroundColor: 'white',
+        backgroundColor: '#ffffff',
         borderRadius: 3,
         borderWidth: 3,
-        padding:10,
-        marginVertical: 5
+        padding: 10,
+        marginVertical: 15
     }
 
 });

@@ -44,46 +44,6 @@ const reducerCreate = params=>{
 };
 
 export default class HelloPage extends React.Component {
-    componentDidMount() {
-        FCM.requestPermissions(); // for iOS
-        FCM.getFCMToken().then(token => {
-            console.log(token)
-            // store fcm token in your server
-        });
-        FCM.getInitialNotification().then(notif=>{
-            console.log("getInitialNotification:")
-            console.log(notif)
-        }
-        );
-        FCM.on('notification', (notif) => {
-            console.log("on notification:")
-            console.log(notif)
-            FCM.presentLocalNotification({
-            id: "UNIQ_ID_STRING",                               // (optional for instant notification)
-            title: notif.sum,                     // as FCM payload
-            body: notificationUnsubscribe.msg})
-        })
-        
-      //   this.notificationUnsubscribe = FCM.on('notification', (notif) => {
-      //       // there are two parts of notif. notif.notification contains the notification payload, notif.data contains data payload
-      //       console.log(notif)
-      //       FCM.presentLocalNotification({
-      //       title: notif.sum,                     // as FCM payload
-      //       body: notif.msg}
-      //       )       
-      //       if(notif.local_notification){
-      //         //this is a local notification
-      //     }
-      //     if(notif.opened_from_tray){
-      //         //app is open/resumed because user clicked banner
-      //     }
-      // });
-        this.refreshUnsubscribe = FCM.on('refreshToken', (token) => {
-            console.log(token)
-            // fcm token may not be available on first load, catch it here
-        });
-    }
-
     render() {
         return <Router createReducer={reducerCreate} sceneStyle={{backgroundColor:'#F7F7F7'}}>
         <Scene key="modal" component={Modal} >
@@ -92,9 +52,31 @@ export default class HelloPage extends React.Component {
         <Scene key="signin"  component={SignIn}  title="Логин" />
         <Scene key="signup" component={SignUp} title="Регистрация"/>
         </Scene>
-
         </Scene>
         </Router>;
-        
+    }
+
+    componentDidMount() {
+        FCM.requestPermissions(); // for iOS
+        FCM.getFCMToken().then(token => {
+            console.log(token);
+            // store fcm token in your server
+        });
+        FCM.getInitialNotification().then(notif=>{
+            console.log("getInitialNotification:");
+            console.log(notif)
+        }
+        );
+        FCM.on('notification', (notif) => {
+            console.log("on notification:");
+            console.log(notif);
+            realm.write(() => {
+                realm.create('Dog', {name: 'Rex'});
+            });
+            FCM.presentLocalNotification({
+            id: "UNIQ_ID_STRING",                               // (optional for instant notification)
+            title: notif.sum,                     // as FCM payload
+            body: notif.msg})
+        });
     }
 }

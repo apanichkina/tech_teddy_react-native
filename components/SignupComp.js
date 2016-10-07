@@ -14,17 +14,19 @@ import {
     import SmartScrollView from 'react-native-smart-scroll-view';
     import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
     import Button from 'react-native-button';
-
+import Loader from './Loader.js'
     const dismissKeyboard = require('dismissKeyboard')
     var t = require('tcomb-form-native');
+
     var Form = t.form.Form;
 
-    var tv = require('tcomb-validation');
-    var validate = tv.validate;
+    //var tv = require('tcomb-validation');
+    //var validate = tv.validate;
 
     var regExpLogin = new RegExp("^[a-z0-9_-]{3,16}$", 'i');
     var regExpEmail = new RegExp(/.+@.+\..+/i);
     var regExpPassword = new RegExp("^.{6,}$", 'i');
+
     var Name = t.refinement(t.String, function (str) { return str.length >= 3 &&  str.length <= 16 && regExpLogin.test(str)});
     Name.getValidationErrorMessage = function (value, path, context) {
         return 'неверный формат логина';
@@ -95,15 +97,7 @@ var options = {
 };
 
 
-const Loader = React.createClass({
-    render: function() {
-        return (
-            <View>
-            <Bars size={10} color='#8e44ad' />
-            </View>
-            );
-    }
-});
+
 
 
 class SignUp extends Component {
@@ -128,29 +122,28 @@ onChange(value) {
 }
 render() {
     return (
+  <View>
+      <SmartScrollView
+      contentContainerStyle = { styles.contentContainerStyle }
+      forceFocusField       = { this.state.focusField }
+      scrollPadding         = { 10 }
+      >
+          <Loader/>
+      <Form
+      ref="form"
+      type={Person}
+      options={options}
+      value={this.state.value}
+      onChange={this.onChange.bind(this)}
+      />
 
-        <View>
-        <SmartScrollView
-        contentContainerStyle = { styles.contentContainerStyle }
-        forceFocusField       = { this.state.focusField }
-        scrollPadding         = { 10 }
-        >
-        <Form
-        ref="form"
-        type={Type}
-        options={options}
-        value={this.state.value}
-        onChange={this.onChange.bind(this)}
-        />
-
-        <View>
-        {(this.state.internet
-            ? <Loader style={styles.preloader}></Loader>     
-            :  <Button 
-            containerStyle={styles.button} 
-            style = {styles.buttonText}
-            onPress={this.onPress.bind(this)}
-            >
+      <View>
+      {(this.state.internet
+        ? <Loader style={styles.preloader}></Loader>     
+        :  <Button 
+        containerStyle={styles.button} 
+        style = {styles.buttonText}
+        onPress={this.onPress.bind(this)}>
             Зарегистрироваться
             </Button>
             )}
@@ -219,8 +212,7 @@ onPress() {
                this.setState({
                    internet:false
                });
-          })
-            .catch((error) => {
+          }).catch((error) => {
                 this.setState({
                    internet:false
                });
@@ -238,7 +230,7 @@ onPress() {
         },
         buttonText: {
             fontSize: 18,
-            color: 'white',
+            color: '#ffffff',
             alignSelf: 'center'
         },
         preloader: {
@@ -255,16 +247,19 @@ onPress() {
             justifyContent: 'center'
         },
         contentContainerStyle: {
-            marginTop:20,
             padding: 20,
             marginBottom:20,
             paddingBottom:20,
-
             backgroundColor: '#ffffff',
-
-            alignItems:        'stretch',
-            justifyContent:    'space-around'
+            alignItems: 'stretch',
+            justifyContent: 'space-around'
+        },
+        help: {
+            color: 'blue'
+        },
+        error: {
+            color: 'blue'
         }
-    })
+    });
 
     module.exports = SignUp;
