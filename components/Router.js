@@ -58,13 +58,10 @@ export default class HelloPage extends React.Component {
         FCM.on('notification', (notif) => {
             console.log("on notification:")
             console.log(notif)
-            realm.write(() => {
-                realm.create('Dog', {name: 'Rex'});
-            });
             FCM.presentLocalNotification({
             id: "UNIQ_ID_STRING",                               // (optional for instant notification)
             title: notif.sum,                     // as FCM payload
-            body: notif.msg})
+            body: notificationUnsubscribe.msg})
         })
         
       //   this.notificationUnsubscribe = FCM.on('notification', (notif) => {
@@ -98,5 +95,6 @@ export default class HelloPage extends React.Component {
 
         </Scene>
         </Router>;
+        
     }
 }
