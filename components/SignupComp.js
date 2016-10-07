@@ -97,6 +97,10 @@ class SignUp extends Component {
     this.state = {internet:false};
 
 }
+
+onChange(value) {
+    this.setState({ value });
+  }
 render() {
     return (
 
@@ -109,6 +113,8 @@ render() {
       ref="form"
       type={Person}
       options={options}
+      value={this.state.value}
+      onChange={this.onChange.bind(this)}
       />
 
       <View>
