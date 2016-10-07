@@ -10,20 +10,22 @@ import {
     TouchableHighlight,
     Text } from 'react-native'
 
-    import SmartScrollView from 'react-native-smart-scroll-view';
-    import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
-    import Button from 'react-native-button';
+import SmartScrollView from 'react-native-smart-scroll-view';
+import Button from 'react-native-button';
+import Loader from './Loader.js'
 
 
     var t = require('tcomb-form-native');
+
     var Form = t.form.Form;
 
-    var tv = require('tcomb-validation');
-    var validate = tv.validate;
+    //var tv = require('tcomb-validation');
+    //var validate = tv.validate;
 
     var regExpLogin = new RegExp("^[a-z0-9_-]{3,16}$", 'i');
     var regExpEmail = new RegExp(/.+@.+\..+/i);
     var regExpPassword = new RegExp("^.{6,}$", 'i');
+
     var Name = t.refinement(t.String, function (str) { return str.length >= 3 &&  str.length <= 16 && regExpLogin.test(str)});
     Name.getValidationErrorMessage = function (value, path, context) {
         return 'неверный формат логина';
@@ -80,15 +82,7 @@ var options = {
 };
 
 
-const Loader = React.createClass({
-    render: function() {
-        return (
-            <View>
-            <Bars size={10} color='#8e44ad' />
-            </View>
-            );
-    }
-});
+
 
 
 class SignUp extends Component {
@@ -109,6 +103,7 @@ render() {
       forceFocusField       = { this.state.focusField }
       scrollPadding         = { 10 }
       >
+          <Loader/>
       <Form
       ref="form"
       type={Person}
@@ -159,11 +154,11 @@ onPress() {
                 this.setState({
                    internet:false
                });
-                console.log(responseJson)
-                console.log(responseJson.status)
-                console.log(responseJson.body.email)
-                console.log(responseJson.body.password)
-                console.log(responseJson.body.login)
+                console.log('response: '+ responseJson);
+                console.log('status: '+ responseJson.status);
+                console.log('body.email: '+ responseJson.body.email);
+                console.log('body.password: '+ responseJson.body.password);
+                console.log('body.login: ' + responseJson.body.login);
             })
             .catch((error) => {
                 this.setState({
@@ -183,7 +178,7 @@ onPress() {
         },
         buttonText: {
             fontSize: 18,
-            color: 'white',
+            color: '#ffffff',
             alignSelf: 'center'
         },
         preloader: {
@@ -200,15 +195,18 @@ onPress() {
             justifyContent: 'center'
         },
         contentContainerStyle: {
-            marginTop:20,
             padding: 20,
-            paddingBottom:50,
-
+            paddingBottom: 50,
             backgroundColor: '#ffffff',
-
-            alignItems:        'stretch',
-            justifyContent:    'space-around'
+            alignItems: 'stretch',
+            justifyContent: 'space-around'
+        },
+        help: {
+            color: 'blue'
+        },
+        error: {
+            color: 'blue'
         }
-    })
+    });
 
     module.exports = SignUp;

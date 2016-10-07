@@ -44,20 +44,32 @@ const reducerCreate = params=>{
 };
 
 export default class HelloPage extends React.Component {
+    render() {
+        return <Router createReducer={reducerCreate} sceneStyle={{backgroundColor:'#F7F7F7'}}>
+            <Scene key="modal" component={Modal} >
+                <Scene key="root" hideNavBar={true}>
+                    <Scene key="launcher"  component={Launcher}  title="Добро пожаловать!" initial />
+                    <Scene key="signin"  component={SignIn}  title="Логин" />
+                    <Scene key="signup" component={SignUp} title="Регистрация"/>
+                </Scene>
+            </Scene>
+        </Router>;
+    }
+
     componentDidMount() {
         FCM.requestPermissions(); // for iOS
         FCM.getFCMToken().then(token => {
-            console.log(token)
+            console.log(token);
             // store fcm token in your server
         });
         FCM.getInitialNotification().then(notif=>{
-            console.log("getInitialNotification:")
+            console.log("getInitialNotification:");
             console.log(notif)
         }
         );
         FCM.on('notification', (notif) => {
-            console.log("on notification:")
-            console.log(notif)
+            console.log("on notification:");
+            console.log(notif);
             realm.write(() => {
                 realm.create('Dog', {name: 'Rex'});
             });
@@ -65,7 +77,7 @@ export default class HelloPage extends React.Component {
             id: "UNIQ_ID_STRING",                               // (optional for instant notification)
             title: notif.sum,                     // as FCM payload
             body: notif.msg})
-        })
+        });
         
       //   this.notificationUnsubscribe = FCM.on('notification', (notif) => {
       //       // there are two parts of notif. notif.notification contains the notification payload, notif.data contains data payload
@@ -82,21 +94,10 @@ export default class HelloPage extends React.Component {
       //     }
       // });
         this.refreshUnsubscribe = FCM.on('refreshToken', (token) => {
-            console.log(token)
+            console.log(token);
             // fcm token may not be available on first load, catch it here
         });
     }
 
-    render() {
-        return <Router createReducer={reducerCreate} sceneStyle={{backgroundColor:'#F7F7F7'}}>
-        <Scene key="modal" component={Modal} >
-        <Scene key="root" hideNavBar={true}>
-        <Scene key="launcher"  component={Launcher}  title="Добро пожаловать!" initial />
-        <Scene key="signin"  component={SignIn}  title="Логин" />
-        <Scene key="signup" component={SignUp} title="Регистрация"/>
-        </Scene>
 
-        </Scene>
-        </Router>;
-    }
 }
