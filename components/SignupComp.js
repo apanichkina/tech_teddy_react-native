@@ -14,7 +14,7 @@ import {
     import SmartScrollView from 'react-native-smart-scroll-view';
     import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
     import Button from 'react-native-button';
-import Loader from './Loader.js'
+    import Loader from './Loader.js'
     const dismissKeyboard = require('dismissKeyboard')
     var t = require('tcomb-form-native');
 
@@ -101,16 +101,13 @@ var options = {
 
 
 class SignUp extends Component {
-    componentDidMount() {
-  // Register the alert located on this master page
-  // This MessageBar will be accessible from the current (same) component, and from its child component
-  // The MessageBar is then declared only once, in your main component.
-  MessageBarManager.registerMessageBar(this.refs.alert);
+componentDidMount() {
+    MessageBarManager.registerMessageBar(this.refs.alert);
 }
 componentWillUnmount() {
-  // Remove the alert located on this master page from the manager
-  MessageBarManager.unregisterMessageBar();
+    MessageBarManager.unregisterMessageBar();
 }
+
 constructor(props) {
     super(props);
     this.state = {internet:false, options:options};
@@ -122,13 +119,13 @@ onChange(value) {
 }
 render() {
     return (
-  <View>
+      <View>
       <SmartScrollView
       contentContainerStyle = { styles.contentContainerStyle }
       forceFocusField       = { this.state.focusField }
       scrollPadding         = { 10 }
       >
-    
+
       <Form
       ref="form"
       type={Type}
@@ -144,17 +141,17 @@ render() {
         containerStyle={styles.button} 
         style = {styles.buttonText}
         onPress={this.onPress.bind(this)}>
-            Зарегистрироваться
-            </Button>
-            )}
-        </View>
+        Зарегистрироваться
+        </Button>
+        )}
+      </View>
 
-        </SmartScrollView>
-        <MessageBarAlert ref="alert" />
-        </View>
+      </SmartScrollView>
+      <MessageBarAlert ref="alert" />
+      </View>
 
 
-        );
+      );
 }
 onPress() {
     dismissKeyboard()
@@ -202,64 +199,83 @@ onPress() {
                     else{
                         msg = "Неизвестная ошибка"
                     }
-                  MessageBarManager.showAlert({
+                    MessageBarManager.showAlert({
                       title: 'Вот так дела!',
                       message: msg,
                       alertType: 'error',
 
                   });
-              }
-               this.setState({
-                   internet:false
-               });
-          }).catch((error) => {
+                }
                 this.setState({
-                   internet:false
-               });
+                 internet:false
+             });
+            }).catch((error) => {
+                this.setState({
+                 internet:false
+             });
+                if (error.message == "Network request failed")
+                {
+                    MessageBarManager.showAlert({
+                        title: 'У вас был интернет, Ииии... его нет',
+                        message: 'Проблемы с интернетом',
+                        alertType: 'error',
+
+                    });
+                }
+                else{
+                    MessageBarManager.showAlert({
+                        title: 'OMGWTFBBQ',
+                        message: 'неизвестная ошибка',
+                        alertType: 'error',
+
+                    });
+                }
                 console.log(error)
             });
             
         }
-    }}
+    }
+}
 
-    var styles = StyleSheet.create({
-        title: {
-            fontSize: 30,
-            alignSelf: 'center',
-            marginBottom: 30
-        },
-        buttonText: {
-            fontSize: 18,
-            color: '#ffffff',
-            alignSelf: 'center'
-        },
-        preloader: {
-            alignSelf: 'stretch'
-        },
-        button: {
-            height: 36,
-            backgroundColor: '#8e44ad',
-            borderColor: '#8e44ad',
-            borderWidth: 3,
-            borderRadius: 3,
-            marginBottom: 10,
-            alignSelf: 'stretch',
-            justifyContent: 'center'
-        },
-        contentContainerStyle: {
-            padding: 20,
-            marginBottom:20,
-            paddingBottom:20,
-            backgroundColor: '#ffffff',
-            alignItems: 'stretch',
-            justifyContent: 'space-around'
-        },
-        help: {
-            color: 'blue'
-        },
-        error: {
-            color: 'blue'
-        }
-    });
+var styles = StyleSheet.create({
+    title: {
+        fontSize: 30,
+        alignSelf: 'center',
+        marginBottom: 30
+    },
+    buttonText: {
+        fontSize: 18,
+        color: '#ffffff',
+        alignSelf: 'center'
+    },
+    preloader: {
+        alignSelf: 'stretch'
+    },
+    button: {
+        height: 36,
+        backgroundColor: '#8e44ad',
+        borderColor: '#8e44ad',
+        borderWidth: 3,
+        borderRadius: 3,
+        marginBottom: 10,
+        alignSelf: 'stretch',
+        justifyContent: 'center'
+    },
+    contentContainerStyle: {
+        padding: 20,
+        marginBottom:20,
+        paddingBottom:20,
+        backgroundColor: '#ffffff',
+        alignItems: 'stretch',
+        justifyContent: 'space-around'
+    },
+    help: {
+        color: 'blue'
+    },
+    error: {
+        color: 'blue'
+    }
+});
 
-    module.exports = SignUp;
+
+module.exports = SignUp;
