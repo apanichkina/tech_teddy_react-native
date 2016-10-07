@@ -20,6 +20,13 @@ import { Scene, Router, TabBar, Modal, Schema, Actions, Reducer, ActionConst } f
 import Launcher from './Launcher'
 import SignUp from './SignupComp'
 import SignIn from './SigninComp'
+//import Main from './MainPage'
+import NavigationDrawer from './NavigationDrawer'
+import TabView from './TabView'
+import TabIcon from './TabIcon'
+import WiFi from './WiFi'
+import Bluetooth from './Bluetooth'
+import Story from './Story'
 
 const Realm = require('realm');
 const realm = new Realm({
@@ -27,14 +34,25 @@ const realm = new Realm({
 });
 
 
-class TabIcon extends React.Component {
-    render(){
-        return (
-            <Text style={{color: this.props.selected ? 'red' :'black'}}>{this.props.title}</Text>
-            );
-    }
-}
+//class TabIcon extends React.Component {
+//    render(){
+//        return (
+//            <Text style={{color: this.props.selected ? 'red' :'black'}}>{this.props.title}</Text>
+//            );
+//    }
+//}
 
+const styles = StyleSheet.create({
+    container: { flex: 1, backgroundColor: 'transparent', justifyContent: 'center',
+        alignItems: 'center'
+    },
+    tabBarStyle: {
+        backgroundColor: '#eee'
+    },
+    tabBarSelectedItemStyle: {
+        backgroundColor: '#ddd'
+    }
+});
 const reducerCreate = params=>{
     const defaultReducer = Reducer(params);
     return (state, action)=>{
@@ -43,16 +61,37 @@ const reducerCreate = params=>{
     }
 };
 
+//class TabIcon extends React.Component {
+//    render(){
+//        return (
+//            <Text style={{color: this.props.selected ? 'red' :'black'}}>{this.props.title}</Text>
+//        );
+//    }
+//}
+
+
+
 export default class HelloPage extends React.Component {
     render() {
         return <Router createReducer={reducerCreate} sceneStyle={{backgroundColor:'#F7F7F7'}}>
-        <Scene key="modal" component={Modal} >
+
         <Scene key="root" hideNavBar={true}>
         <Scene key="launcher"  component={Launcher}  title="Добро пожаловать!" initial />
         <Scene key="signin"  component={SignIn}  title="Логин" />
         <Scene key="signup" component={SignUp} title="Регистрация"/>
+            <Scene key="tabbar" tabs={true} >
+
+                <Scene key="tab3" component={Bluetooth} title="Tab #1" icon={TabIcon}/>
+                <Scene key="tab4" component={WiFi} title="Tab #2" icon={TabIcon}/>
+                <Scene key="tab5" component={Story} title="Tab #3" icon={TabIcon} />
+            </Scene>
+
+
+
+
+
         </Scene>
-        </Scene>
+
         </Router>;
     }
 

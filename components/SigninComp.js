@@ -71,7 +71,7 @@ import {
 		}
 		render() {
 			return (
-				<View>
+				<View style={styles.container}>
 				<SmartScrollView
 				contentContainerStyle = { styles.contentContainerStyle }
 				forceFocusField       = { this.state.focusField }
@@ -132,12 +132,13 @@ import {
         		});
         		if(responseJson.status == 0){
                     	// Все хорошо
+                    Actions.tabbar({session: responseJson.body.irissessionid});
                     }
                     else{
                     	MessageBarManager.showAlert({
                     		title: 'ОБИДА!',
                     		message: 'Такой логин/пароль не найдены',
-                    		alertType: 'error',
+                    		alertType: 'error'
 
                     	});
                     }
@@ -152,7 +153,7 @@ import {
                         
                         title: 'Проблемы с интернетом',
                         message: 'У вас был интернет, Ииии... его нет',
-                        alertType: 'error',
+                        alertType: 'error'
 
                     });
         		}
@@ -160,7 +161,7 @@ import {
         			MessageBarManager.showAlert({
         				title: 'OMGWTFBBQ',
         				message: 'неизвестная ошибка',
-        				alertType: 'error',
+        				alertType: 'error'
 
         			});
         		}
@@ -170,36 +171,41 @@ import {
 }
 
 var styles = StyleSheet.create({
-	title: {
-		fontSize: 30,
-		alignSelf: 'center',
-		marginBottom: 30
-	},
-	buttonText: {
-		fontSize: 18,
-		color: '#ffffff',
-		alignSelf: 'center'
-	},
-	preloader: {
-		alignSelf: 'center'
-	},
-	button: {
-		height: 36,
-		backgroundColor: '#8e44ad',
-		borderColor: '#8e44ad',
-		borderWidth: 3,
-		borderRadius: 3,
-		marginBottom: 10,
-		alignSelf: 'stretch',
-		justifyContent: 'center'
-	},
-	contentContainerStyle: {
-		flex: 1,
-		justifyContent: 'center',
-		backgroundColor: '#ffffff',
-		padding: 20,
-		alignItems: 'stretch'
-	}
+    title: {
+        fontSize: 30,
+        alignSelf: 'center',
+        marginBottom: 30
+    },
+    buttonText: {
+        fontSize: 18,
+        color: '#ffffff',
+        alignSelf: 'center'
+    },
+    preloader: {
+        alignSelf: 'center'
+    },
+    button: {
+        height: 36,
+        backgroundColor: '#8e44ad',
+        borderColor: '#8e44ad',
+        borderWidth: 3,
+        borderRadius: 3,
+        marginBottom: 10,
+        alignSelf: 'stretch',
+        justifyContent: 'center'
+    },
+    contentContainerStyle: {
+        flex: 1,
+        justifyContent: 'center'
+        //alignItems: 'stretch'
+    },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: '#ffffff',
+        padding: 20
+        //alignItems: 'stretch'
+    }
 });
 
 module.exports = SignIn;

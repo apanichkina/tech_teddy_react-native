@@ -10,6 +10,7 @@ export default class Launcher extends Component {
         return (
 
             <View style={styles.container}>
+
                 <View style={styles.containerIcon}>
                     <Image
                         style={styles.icon}
