@@ -39,9 +39,9 @@ import {
     Password.getValidationErrorMessage = function (value, path, context) {
         return 'слишком мало символов';
     };
-    var Password2 = t.refinement(t.String, function (str) { return str == Form.password1});
+    var Password2 = t.refinement(t.String, function (str) { return str == Form.password2});
     Password2.getValidationErrorMessage = function (value, path, context) {
-        return 'пароли должны совпадать';
+        return 'слишком мало символов';
     };
 
 
@@ -184,13 +184,7 @@ onPress() {
                 console.log(responseJson.body.password)
                 console.log(responseJson.body.login)
                 if (responseJson.status == 0){
-                    Actions.launcher({isAuthorized: true, text: 'Залогинился!'});
-                    MessageBarManager.showAlert({
-                      title: 'Your alert title goes here',
-                      message: 'Your alert message goes here',
-                      alertType: 'success'
-
-                  });
+                     Actions.tabbar({session: responseJson.body.irissessionid});
                 }
                 else{
                     var msg;
@@ -203,7 +197,7 @@ onPress() {
                     MessageBarManager.showAlert({
                       title: 'Вот так дела!',
                       message: msg,
-                      alertType: 'error'
+                      alertType: 'error',
 
                   });
                 }
@@ -217,8 +211,9 @@ onPress() {
                 if (error.message == "Network request failed")
                 {
                     MessageBarManager.showAlert({
-                        title: 'У вас был интернет, Ииии... его нет',
-                        message: 'Проблемы с интернетом',
+
+                        title: 'Проблемы с интернетом',
+                        message: 'У вас был интернет, Ииии... его нет',
                         alertType: 'error',
 
                     });
