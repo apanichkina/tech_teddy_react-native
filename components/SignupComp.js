@@ -200,8 +200,10 @@ onPress() {
             justifyContent: 'center'
         },
         contentContainerStyle: {
-            marginTop:30,
+            marginTop:20,
             padding: 20,
+            paddingBottom:50,
+
             backgroundColor: '#ffffff',
 
             alignItems:        'stretch',
