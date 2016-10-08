@@ -10,11 +10,28 @@ const propTypes = {
 
 const TabIcon = (props) => (
 
-    <Image
-        style={{ width: 35,height: 35, tintColor: props.selected ? '#8e44ad' : '#9E9E9E' }}
-source={require('../img/bluetooth_white_24dp.png')}
-/>
-);
+    <View>
+
+        {props.title == 'bluetooth' &&
+        <Image
+            style={{ width: 35,height: 35, tintColor: props.selected ? '#8e44ad' : '#9E9E9E' }}
+            source={require('../img/bluetooth_white_24dp.png')}
+            />
+        }
+        {props.title == 'wifi' &&
+        <Image
+            style={{ width: 35,height: 35, tintColor: props.selected ? '#8e44ad' : '#9E9E9E' }}
+            source={require('../img/wifi_white_24dp.png')}
+            />
+        }
+        {props.title == 'story' &&
+        <Image
+            style={{ width: 35,height: 35, tintColor: props.selected ? '#8e44ad' : '#9E9E9E' }}
+            source={require('../img/play_arrow_white_24dp.png')}
+            />
+        }
+    </View>
+)
 
 TabIcon.propTypes = propTypes;
 

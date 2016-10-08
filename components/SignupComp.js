@@ -39,9 +39,9 @@ import {
     Password.getValidationErrorMessage = function (value, path, context) {
         return 'слишком мало символов';
     };
-    var Password2 = t.refinement(t.String, function (str) { return str == Form.password2});
+    var Password2 = t.refinement(t.String, function (str) { return str == Form.password1});
     Password2.getValidationErrorMessage = function (value, path, context) {
-        return 'слишком мало символов';
+        return 'пароли должны совпадать';
     };
 
 
@@ -119,7 +119,7 @@ onChange(value) {
 }
 render() {
     return (
-      <View>
+      <View >
       <SmartScrollView
       contentContainerStyle = { styles.contentContainerStyle }
       forceFocusField       = { this.state.focusField }
@@ -184,7 +184,8 @@ onPress() {
                 console.log(responseJson.body.password)
                 console.log(responseJson.body.login)
                 if (responseJson.status == 0){
-                     Actions.tabbar({session: responseJson.body.irissessionid});
+                    Actions.tabbar({session: responseJson.body.irissessionid});
+
                 }
                 else{
                     var msg;
@@ -222,7 +223,7 @@ onPress() {
                     MessageBarManager.showAlert({
                         title: 'OMGWTFBBQ',
                         message: 'неизвестная ошибка',
-                        alertType: 'error',
+                        alertType: 'error'
 
                     });
                 }
@@ -234,6 +235,10 @@ onPress() {
 }
 
 var styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#ffffff'
+    },
     title: {
         fontSize: 30,
         alignSelf: 'center',
@@ -259,17 +264,9 @@ var styles = StyleSheet.create({
     },
     contentContainerStyle: {
         padding: 20,
-        marginBottom:20,
-        paddingBottom:20,
         backgroundColor: '#ffffff',
         alignItems: 'stretch',
-        justifyContent: 'space-around'
-    },
-    help: {
-        color: 'blue'
-    },
-    error: {
-        color: 'blue'
+        justifyContent: 'center'
     }
 });
 
