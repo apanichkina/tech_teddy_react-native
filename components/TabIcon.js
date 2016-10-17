@@ -11,6 +11,10 @@ const propTypes = {
 const TabIcon = (props) => (
 
     <View>
+        {/*<Image
+         style={{ width: 35,height: 35, tintColor: props.selected ? '#8e44ad' : '#9E9E9E' }}
+         source={require('../img/accessible_white_24dp.png')}
+         /> */}
 
         {props.title == 'bluetooth' &&
         <Image
