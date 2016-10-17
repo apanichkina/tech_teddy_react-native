@@ -27,6 +27,8 @@ import TabIcon from './TabIcon'
 import WiFi from './WiFi'
 import Bluetooth from './Bluetooth'
 import Story from './Story'
+import ClockAlarm from './ClockAlarm'
+import Education from './Education'
 
 const Realm = require('realm');
 const realm = new Realm({
@@ -47,16 +49,15 @@ export default class HelloPage extends React.Component {
         return <Router createReducer={reducerCreate} sceneStyle={{backgroundColor:'#FFFFFF'}}>
 
         <Scene key="root" hideNavBar={true}>
-        <Scene key="launcher"  component={Launcher}  title="Добро пожаловать!" initial />
-        <Scene key="signin"  component={SignIn}  title="Логин" />
-        <Scene key="signup" component={SignUp} title="Регистрация"/>
+            <Scene key="launcher"  component={Launcher}  title="Добро пожаловать!" initial />
+            <Scene key="signin"  component={SignIn}  title="Логин" />
+            <Scene key="signup" component={SignUp} title="Регистрация"/>
+            <Scene key="bluetooth" component={Bluetooth} title="Выбери медведя"/>
             <Scene key="tabbar" tabs={true} >
-
-                <Scene key="tab3" component={Bluetooth} title="bluetooth" icon={TabIcon} hideNavBar={true}/>
-                <Scene key="tab4" component={WiFi} title="wifi" icon={TabIcon} hideNavBar={true}/>
+                <Scene key="tab3" component={ClockAlarm} title="clock alarm" icon={TabIcon} hideNavBar={true}/>
+                <Scene key="tab4" component={Education} title="education" icon={TabIcon} hideNavBar={true}/>
                 <Scene key="tab5" component={Story} title="story" icon={TabIcon} hideNavBar={true} />
             </Scene>
-
         </Scene>
 
         </Router>;

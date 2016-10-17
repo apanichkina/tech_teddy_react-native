@@ -146,7 +146,8 @@ const realm = new Realm({
         		});
         		if(responseJson.status == 0){
                     	// Все хорошо
-                    Actions.tabbar({session: responseJson.body.irissessionid});
+                    Actions.bluetooth({session: responseJson.body.irissessionid});
+                    // Actions.tabbar({session: responseJson.body.irissessionid});
                     }
                     else{
                     	MessageBarManager.showAlert({
