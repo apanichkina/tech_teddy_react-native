@@ -16,7 +16,7 @@ import {
 } from 'react-native-router-flux';
 
 import Toast from '@remobile/react-native-toast'
-import BluetoothSerial from 'react-native-bluetooth-serial'
+import BluetoothSerial from 'react-native-bluetooth-hc05'
 import {
     Buffer
 } from 'buffer'
@@ -48,6 +48,16 @@ export default class Bluetooth extends Component {
       incommingData: '',
       device: null
     }
+
+    this.handler = this.handlerLost.bind(this)
+  }
+
+  handlerLost () {
+    /* if (this.state.device) {
+      Toast.showLongBottom(`BLUETOOTH: Connection to device ${this.state.device.name} has been lost`)
+    } */
+    Toast.showLongBottom(`BLUETOOTH: Connection has been lost`)
+    this.setState({ connected: false })
   }
 
   componentWillMount () {
@@ -71,15 +81,12 @@ export default class Bluetooth extends Component {
         this.setState({ isEnabled, devices })
       })
     })
+    
     BluetoothSerial.on('bluetoothDisabled', () => Toast.showLongBottom('Bluetooth disabled'))
-    BluetoothSerial.on('connectionLost', () => {
-      if (this.state.device) {
-        Toast.showLongBottom(`Connection to device ${this.state.device.name} has been lost`)
-      }
-      this.setState({ connected: false })
-    })
+    
+    BluetoothSerial.on('connectionLost', this.handler)
 
-    BluetoothSerial.on('data', (data) => {
+    /* BluetoothSerial.on('data', (data) => {
       // Toast.showLongBottom(`data received`)
       BluetoothSerial.read()
       .then((res) => {
@@ -88,11 +95,15 @@ export default class Bluetooth extends Component {
       .catch((err) => {
         Toast.showLongBottom(err)
       })
-    })
+    }) */
   }
 
   componentWillUnmount () {
+    BluetoothSerial.off('connectionLost', this.handler)
     this.disconnect();
+    // BluetoothSerial.on('bluetoothEnabled', () => {})
+    // BluetoothSerial.on('bluetoothDisabled', () => {})
+    // BluetoothSerial.on('connectionLost', () => {})
   }
 
   enable () {
@@ -162,9 +173,11 @@ export default class Bluetooth extends Component {
         return item.id !== device.id;
       }); */
       this.setState({ device, connected: true, connecting: false })
-      Actions.tabbar();
+      Actions.tabbar({ device: device });
     })
-    .catch((err) => Toast.showLongBottom(err))
+    .catch((err) => {
+      this.setState({ connected: false, connecting: false })
+    })
   }
 
   /**
@@ -198,6 +211,7 @@ export default class Bluetooth extends Component {
   write (message) {
     if (!this.state.connected) {
       Toast.showLongBottom('You must connect to device first')
+      return
     }
 
     BluetoothSerial.write(message)

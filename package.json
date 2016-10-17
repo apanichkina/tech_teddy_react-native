@@ -9,7 +9,7 @@
     "@remobile/react-native-toast": "^1.0.5",
     "react": "15.3.2",
     "react-native": "0.34.1",
-    "react-native-bluetooth-serial": "^0.1.5",
+    "react-native-bluetooth-hc05": "^0.2.0",
     "react-native-button": "^1.7.1",
     "react-native-dismiss-keyboard": "^1.0.0",
     "react-native-drawer": "^2.3.0",

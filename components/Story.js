@@ -6,7 +6,7 @@ import {
     Buffer
 } from 'buffer'
 
-import BluetoothSerial from 'react-native-bluetooth-serial'
+import BluetoothSerial from 'react-native-bluetooth-hc05'
 import Toast from '@remobile/react-native-toast'
 
 var strings = {
@@ -18,35 +18,40 @@ export default class Story extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      incommingData: ''
+      incommingData: '',
+      connected: true,
+      device: props.device
     }
+
+    this.handler = this.handlerLost.bind(this)
+    this.read = this.readFunc.bind(this)
   }
 
   componentWillMount () {
-    BluetoothSerial.on('connectionLost', () => {
-      if (this.state.device) {
-        Toast.showLongBottom(`Connection to device ${this.state.device.name} has been lost`)
-      }
-      // this.setState({ connected: false })
-    })
+    BluetoothSerial.on('connectionLost', this.handler)
 
-    BluetoothSerial.on('data', (data) => {
-      // Toast.showLongBottom('data received')
-      BluetoothSerial.read()
-      .then((res) => {
-        this.setState({ incommingData: res })
-        Toast.showLongBottom(res)
-      })
-      .catch((err) => {
-        Toast.showLongBottom(err)
-      })
-    })
+    BluetoothSerial.on('data', this.read);
 
-    this.subscribe();
+    this.subscribe('\n');
+  }
+
+  readFunc (data) {
+    this.setState({ incommingData: data.data })
+  }
+
+  handlerLost () {
+    /* if (this.state.device) {
+      Toast.showLongBottom(`STORY: Connection to device ${this.state.device.name} has been lost`)
+    } */
+    Toast.showLongBottom(`STORY: Connection has been lost`)
+    this.setState({ connected: false })
+    Actions.pop();
   }
 
   componentWillUnmount () {
-    this.unsubscribe();
+    this.unsubscribe()
+    BluetoothSerial.off('connectionLost', this.handler)
+    BluetoothSerial.off('data', this.read);
   }
 
   unsubscribe () {
