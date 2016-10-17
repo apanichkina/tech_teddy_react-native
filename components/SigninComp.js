@@ -1,52 +1,50 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Actions } from 'react-native-router-flux';
+import { Actions, ActionConst} from 'react-native-router-flux';
 import {
 	AppRegistry,
 	StyleSheet,
 	View,
 	TouchableHighlight} from 'react-native'
-
-	import SmartScrollView from 'react-native-smart-scroll-view';
-	import Button from 'react-native-button';
-	import Loader from './Loader.js'
+import SmartScrollView from 'react-native-smart-scroll-view';
+import Button from 'react-native-button';
+import Loader from './Loader.js'
 
 const Realm = require('realm');
 const realm = new Realm({
     schema: [{name: 'Token', primaryKey: 'name', properties: {name: 'string', token : 'string'}}]
 });
 
+var MessageBarAlert = require('react-native-message-bar').MessageBar;
+var MessageBarManager = require('react-native-message-bar').MessageBarManager;
 
-	var MessageBarAlert = require('react-native-message-bar').MessageBar;
-	var MessageBarManager = require('react-native-message-bar').MessageBarManager;
+var t = require('tcomb-form-native');
+var Form = t.form.Form;
 
-	var t = require('tcomb-form-native');
-	var Form = t.form.Form;
+var regExpLogin = new RegExp("^[a-z0-9_-]{3,16}$", 'i');
 
-	var regExpLogin = new RegExp("^[a-z0-9_-]{3,16}$", 'i');
-
-	var Name = t.refinement(t.String, function (str) { return str.length >= 3 &&  str.length <= 16 && regExpLogin.test(str)});
-	Name.getValidationErrorMessage = function (value, path, context) {
+var Name = t.refinement(t.String, function (str) { return str.length >= 3 &&  str.length <= 16 && regExpLogin.test(str)});
+Name.getValidationErrorMessage = function (value, path, context) {
 		return 'неверный формат логина';
-	};
-	var Password = t.refinement(t.String, function (str) { return str.length >= 6});
-	Password.getValidationErrorMessage = function (value, path, context) {
+};
+var Password = t.refinement(t.String, function (str) { return str.length >= 6});
+Password.getValidationErrorMessage = function (value, path, context) {
 		return 'слишком мало символов';
-	};
+};
 
-	var Person = t.struct({
-		name: Name,
-		password: Password
-	});
+var Person = t.struct({
+	name: Name,
+	password: Password
+});
 
-	var options = {
+var options = {
 
-		fields: {
-			name: {
-				label: 'Логин:',
-				placeholder:'Логин',
-				underlineColorAndroid: "transparent"
+	fields: {
+		name: {
+			label: 'Логин:',
+			placeholder:'Логин',
+			underlineColorAndroid: "transparent"
 			},
 			password: {
 				label: 'Пароль:',
@@ -57,61 +55,56 @@ const realm = new Realm({
 		}
 	};
 
-	class SignIn extends Component {
+class SignIn extends Component {
 
-		componentDidMount() {
-			MessageBarManager.registerMessageBar(this.refs.alert);
-		}
-		componentWillUnmount() {
-			MessageBarManager.unregisterMessageBar();
-		}
-
-		constructor(props) {
-			super(props);
-			this.state = {internet:false};
-		}
-
-		onChange(value) {
-			this.setState({ value });
-		}
-		render() {
-			return (
-				<View style={styles.container}>
+	componentDidMount() {
+		MessageBarManager.registerMessageBar(this.refs.alert);
+	}
+	componentWillUnmount() {
+		MessageBarManager.unregisterMessageBar();
+	}
+	constructor(props) {
+		super(props);
+		this.state = {internet:false};
+	}
+	onChange(value) {
+		this.setState({ value });
+	}
+	render() {
+		return (
+			<View>
 				<SmartScrollView
 				contentContainerStyle = { styles.contentContainerStyle }
 				forceFocusField       = { this.state.focusField }
 				scrollPadding         = { 10 }
 				>
-				<Form
-				ref="form"
-				type={Person}
-				options={options}
-				value={this.state.value}
-				onChange={this.onChange.bind(this)}
-				/>
-
-				<View>
-				{(this.state.internet
-					? <Loader style={styles.preloader}></Loader>
-					:  <Button
-					containerStyle={styles.button}
-					style = {styles.buttonText}
-					onPress={this.onPress.bind(this)}
-					>
-					Войти
-					</Button>
-					)}
-				</View>
+					<Form
+						ref="form"
+						type={Person}
+						options={options}
+						value={this.state.value}
+						onChange={this.onChange.bind(this)}
+					/>
+					<View>
+						{(this.state.internet ? <Loader style={styles.preloader}></Loader>
+							:  <Button
+								containerStyle={styles.button}
+								style = {styles.buttonText}
+								onPress={this.onPress.bind(this)}>
+								Войти
+								</Button>
+						)}
+					</View>
 				</SmartScrollView>
 				<MessageBarAlert ref="alert" />
-				</View>
+			</View>
 
 
 				);
 		}
-		onPress() {
-			const dismissKeyboard = require('dismissKeyboard')
-			dismissKeyboard()
+	onPress() {
+		const dismissKeyboard = require('dismissKeyboard');
+		dismissKeyboard();
         // call getValue() to get the values of the form
         var value = this.refs.form.getValue();
 
@@ -120,9 +113,8 @@ const realm = new Realm({
         		internet:true
         	});
         	let tokens = realm.objects('Token');
-        	let FCMToken = tokens.filtered('name = "FCM"')
-
-        	let FCMstr = ""
+        	let FCMToken = tokens.filtered('name = "FCM"');
+        	let FCMstr = "";
         	if (FCMToken.length == 1){
         		FCMstr = FCMToken[0].token
         	}
@@ -146,7 +138,9 @@ const realm = new Realm({
         		});
         		if(responseJson.status == 0){
                     	// Все хорошо
-                    Actions.tabbar({session: responseJson.body.irissessionid});
+
+                    Actions.main({session: responseJson.body.irissessionid});
+
                     }
                     else{
                     	MessageBarManager.showAlert({
@@ -209,16 +203,16 @@ var styles = StyleSheet.create({
         justifyContent: 'center'
     },
     contentContainerStyle: {
-        flex: 1,
-        justifyContent: 'center'
-        //alignItems: 'stretch'
+		padding: 20,
+		backgroundColor: '#ffffff',
+
+		justifyContent: 'center'
     },
     container: {
         flex: 1,
         justifyContent: 'center',
         backgroundColor: '#ffffff',
         padding: 20
-        //alignItems: 'stretch'
     }
 });
 
