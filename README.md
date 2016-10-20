@@ -12,4 +12,6 @@ npm start
 # Запустите приложение на android
 react-native run-android
 
+#При возникновении ошибки "...dev server (e.g. 10.0.1.1:8081)""
+adb reverse tcp:8081 tcp:8081
 ```

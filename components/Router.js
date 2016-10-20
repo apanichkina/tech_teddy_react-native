@@ -17,6 +17,7 @@ import TabIcon from './TabIcon'
 import WiFi from './WiFi'
 import Bluetooth from './Bluetooth'
 import Story from './Story'
+import Store from './StoryStore'
 import Page from './Page'
 const Realm = require('realm');
 const realm = new Realm({
@@ -35,7 +36,6 @@ const reducerCreate = params=>{
 export default class HelloPage extends React.Component {
     render() {
         return <Router createReducer={reducerCreate} sceneStyle={{backgroundColor:'#FFFFFF'}}>
-
         <Scene key="root" hideNavBar={true}>
         <Scene key="launcher"  component={Launcher}  title="Добро пожаловать!" initial />
         <Scene key="signin"  component={SignIn}  title="Логин" />
@@ -45,6 +45,7 @@ export default class HelloPage extends React.Component {
                 <Scene key="tab3" component={Bluetooth} title="bluetooth" icon={TabIcon} hideNavBar={true} />
                 <Scene key="tab4" component={WiFi} title="wifi" icon={TabIcon} hideNavBar={true}/>
                 <Scene key="tab5" component={Story} title="story" icon={TabIcon} hideNavBar={true} />
+                <Scene key="store" component={Store} title="store" icon={TabIcon} hideNavBar={true} />
             </Scene>
 
             </Scene>
