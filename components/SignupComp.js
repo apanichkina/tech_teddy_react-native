@@ -9,41 +9,39 @@ import {
     ScrollView,
     TouchableHighlight,
     Text } from 'react-native'
-    var MessageBarAlert = require('react-native-message-bar').MessageBar;
-    var MessageBarManager = require('react-native-message-bar').MessageBarManager;
-    import SmartScrollView from 'react-native-smart-scroll-view';
-    import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
-    import Button from 'react-native-button';
-    import Loader from './Loader.js'
-    const dismissKeyboard = require('dismissKeyboard')
-    var t = require('tcomb-form-native');
+import SmartScrollView from 'react-native-smart-scroll-view';
+import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
+import Button from 'react-native-button';
+import Loader from './Loader.js'
 
-    var Form = t.form.Form;
+var MessageBarAlert = require('react-native-message-bar').MessageBar;
+var MessageBarManager = require('react-native-message-bar').MessageBarManager;
 
-    //var tv = require('tcomb-validation');
-    //var validate = tv.validate;
+const dismissKeyboard = require('dismissKeyboard');
+var t = require('tcomb-form-native');
 
-    var regExpLogin = new RegExp("^[a-z0-9_-]{3,16}$", 'i');
-    var regExpEmail = new RegExp(/.+@.+\..+/i);
-    var regExpPassword = new RegExp("^.{6,}$", 'i');
+var Form = t.form.Form;
 
-    var Name = t.refinement(t.String, function (str) { return str.length >= 3 &&  str.length <= 16 && regExpLogin.test(str)});
-    Name.getValidationErrorMessage = function (value, path, context) {
+var regExpLogin = new RegExp("^[a-z0-9_-]{3,16}$", 'i');
+var regExpEmail = new RegExp(/.+@.+\..+/i);
+var regExpPassword = new RegExp("^.{6,}$", 'i');
+
+var Name = t.refinement(t.String, function (str) { return str.length >= 3 &&  str.length <= 16 && regExpLogin.test(str)});
+Name.getValidationErrorMessage = function (value, path, context) {
         return 'неверный формат логина';
-    };
-    var Email = t.refinement(t.String, function (str) { return regExpEmail.test(str)});
-    Email.getValidationErrorMessage = function (value, path, context) {
+};
+var Email = t.refinement(t.String, function (str) { return regExpEmail.test(str)});
+Email.getValidationErrorMessage = function (value, path, context) {
         return 'неверный формат почты';
-    };
-    var Password = t.refinement(t.String, function (str) { return str.length >= 6});
-    Password.getValidationErrorMessage = function (value, path, context) {
+};
+var Password = t.refinement(t.String, function (str) { return str.length >= 6});
+Password.getValidationErrorMessage = function (value, path, context) {
         return 'слишком мало символов';
-    };
-    var Password2 = t.refinement(t.String, function (str) { return str == Form.password1});
-    Password2.getValidationErrorMessage = function (value, path, context) {
+};
+var Password2 = t.refinement(t.String, function (str) { return str == Form.password1});
+Password2.getValidationErrorMessage = function (value, path, context) {
         return 'пароли должны совпадать';
-    };
-
+};
 
 // here we are: define your domain model
 var Person = t.struct({
@@ -63,7 +61,6 @@ Type.getValidationErrorMessage = function (value) {
     return 'Пароли должны совпадать';
 }
 };
-
 
 var options = {
 
@@ -101,56 +98,48 @@ var options = {
 
 
 class SignUp extends Component {
-componentDidMount() {
-    MessageBarManager.registerMessageBar(this.refs.alert);
-}
-componentWillUnmount() {
-    MessageBarManager.unregisterMessageBar();
-}
+    componentDidMount() {
+        MessageBarManager.registerMessageBar(this.refs.alert);
+    }
+    componentWillUnmount() {
+        MessageBarManager.unregisterMessageBar();
+    }
+    constructor(props) {
+        super(props);
+        this.state = {internet:false, options:options};
+    }
+    onChange(value) {
+        this.setState({ value });
+    }
+    render() {
+        return (
+            <View >
+                <SmartScrollView
+                contentContainerStyle = { styles.contentContainerStyle }
+                forceFocusField       = { this.state.focusField }
+                scrollPadding         = { 10 }>
 
-constructor(props) {
-    super(props);
-    this.state = {internet:false, options:options};
+                    <Form
+                    ref="form"
+                    type={Type}
+                    options={options}
+                    value={this.state.value}
+                    onChange={this.onChange.bind(this)}/>
 
-}
+                    <View>
+                    {(this.state.internet ? <Loader style={styles.preloader}></Loader>
+                    :  <Button
+                        containerStyle={styles.button}
+                        style = {styles.buttonText}
+                        onPress={this.onPress.bind(this)}>
+                        Зарегистрироваться
+                        </Button>
+                    )}
+                    </View>
 
-onChange(value) {
-    this.setState({ value });
-}
-render() {
-    return (
-      <View >
-      <SmartScrollView
-      contentContainerStyle = { styles.contentContainerStyle }
-      forceFocusField       = { this.state.focusField }
-      scrollPadding         = { 10 }
-      >
-
-      <Form
-      ref="form"
-      type={Type}
-      options={options}
-      value={this.state.value}
-      onChange={this.onChange.bind(this)}
-      />
-
-      <View>
-      {(this.state.internet
-        ? <Loader style={styles.preloader}></Loader>     
-        :  <Button 
-        containerStyle={styles.button} 
-        style = {styles.buttonText}
-        onPress={this.onPress.bind(this)}>
-        Зарегистрироваться
-        </Button>
-        )}
-      </View>
-
-      </SmartScrollView>
-      <MessageBarAlert ref="alert" />
-      </View>
-
-
+                </SmartScrollView>
+                <MessageBarAlert ref="alert" />
+            </View>
       );
 }
 onPress() {
@@ -184,7 +173,8 @@ onPress() {
                 console.log(responseJson.body.password)
                 console.log(responseJson.body.login)
                 if (responseJson.status == 0){
-                    Actions.bluetooth({session: responseJson.body.irissessionid});
+
+                    Actions.main({session: responseJson.body.irissessionid});
                 }
                 else{
                     var msg;
@@ -197,7 +187,7 @@ onPress() {
                     MessageBarManager.showAlert({
                       title: 'Вот так дела!',
                       message: msg,
-                      alertType: 'error',
+                      alertType: 'error'
 
                   });
                 }
@@ -214,7 +204,7 @@ onPress() {
 
                         title: 'Проблемы с интернетом',
                         message: 'У вас был интернет, Ииии... его нет',
-                        alertType: 'error',
+                        alertType: 'error'
 
                     });
                 }

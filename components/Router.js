@@ -1,8 +1,3 @@
-// import React, {AppRegistry, Navigator, StyleSheet, Text, View} from 'react-native'
-// import Launch from './components/Launch'
-// import Register from './components/Register'
-// import Login from './components/Login'
-// import Login2 from './components/Login2'
 
 import React, {
   Component,
@@ -14,15 +9,10 @@ import {
 } from 'react-native';
 import FCM from 'react-native-fcm';
 import { Scene, Router, TabBar, Modal, Schema, Actions, Reducer, ActionConst } from 'react-native-router-flux'
-// import Error from './components/Error'
-// import Home from './components/Home'
-// import TabView from './components/TabView'
 import Launcher from './Launcher'
 import SignUp from './SignupComp'
 import SignIn from './SigninComp'
-//import Main from './MainPage'
 import NavigationDrawer from './NavigationDrawer'
-
 import TabIcon from './TabIcon'
 import WiFi from './WiFi'
 import Bluetooth from './Bluetooth'
@@ -30,6 +20,8 @@ import Story from './Story'
 import ClockAlarm from './ClockAlarm'
 import Education from './Education'
 
+import Store from './StoryStore'
+import Page from './Page'
 const Realm = require('realm');
 const realm = new Realm({
     schema: [{name: 'Token', primaryKey: 'name', properties: {name: 'string', token : 'string'}}]
@@ -47,17 +39,20 @@ const reducerCreate = params=>{
 export default class HelloPage extends React.Component {
     render() {
         return <Router createReducer={reducerCreate} sceneStyle={{backgroundColor:'#FFFFFF'}}>
-
         <Scene key="root" hideNavBar={true}>
-            <Scene key="launcher"  component={Launcher}  title="Добро пожаловать!" initial />
-            <Scene key="signin"  component={SignIn}  title="Логин" />
-            <Scene key="signup" component={SignUp} title="Регистрация"/>
-            <Scene key="bluetooth" component={Bluetooth} title="Выбери медведя"/>
-            <Scene key="tabbar" tabs={true} >
-                <Scene key="tab3" component={ClockAlarm} title="clock alarm" icon={TabIcon} hideNavBar={true}/>
-                <Scene key="tab4" component={Education} title="education" icon={TabIcon} hideNavBar={true}/>
+        <Scene key="launcher"  component={Launcher}  title="Добро пожаловать!" initial />
+        <Scene key="signin"  component={SignIn}  title="Логин" />
+        <Scene key="signup" component={SignUp} title="Регистрация"/>
+            <Scene key="main" type={ActionConst.RESET}>
+            <Scene key="tabbar" tabs={true}>
+                <Scene key="tab3" component={Bluetooth} title="bluetooth" icon={TabIcon} hideNavBar={true} />
+                <Scene key="tab4" component={WiFi} title="wifi" icon={TabIcon} hideNavBar={true}/>
                 <Scene key="tab5" component={Story} title="story" icon={TabIcon} hideNavBar={true} />
+                <Scene key="store" component={Store} title="store" icon={TabIcon} hideNavBar={true} />
             </Scene>
+
+            </Scene>
+            <Scene key="page" component={Page} title="story"  hideNavBar={true} />
         </Scene>
 
         </Router>;

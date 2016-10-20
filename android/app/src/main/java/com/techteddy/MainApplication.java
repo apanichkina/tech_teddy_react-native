@@ -4,6 +4,8 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.evollu.react.fcm.FIRMessagingPackage;
 import io.realm.react.RealmReactPackage;
 import com.evollu.react.fcm.FIRMessagingPackage;
 import com.rusel.RCTBluetoothSerial.*;
@@ -30,6 +32,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new RealmReactPackage(),
+            new VectorIconsPackage(),
             new FIRMessagingPackage(),
             new RCTToastPackage(),
             new RCTBluetoothSerialPackage()
