@@ -24,6 +24,7 @@ import {
 var strings = {
   knownBears: 'Знакомые мишки',
   connectedTo: ' подключен',
+  noConnection: '✗ не подключен',
   activateBT: 'Включить Bluetooth',
   title: 'Выбери медведя'
 }
@@ -242,13 +243,6 @@ export default class Bluetooth extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.heading}>{strings.title}</Text>
-
-        <View>
-          <Text>
-            incomming data: {this.state.incommingData || 'nothing'}
-          </Text> 
-        </View> 
-
         <View style={{ backgroundColor: '#eee' }}>
           {Platform.OS === 'android'
           ? (
@@ -276,7 +270,7 @@ export default class Bluetooth extends Component {
               </Text>
             ) : (
               <Text style={[styles.connectionInfo, { color: '#ff6523' }]}>
-                ✗ Not connected to any device
+                {strings.noConnection}
               </Text>
             )}
           </View>
@@ -304,9 +298,9 @@ export default class Bluetooth extends Component {
               label={this.state.discovering ? '... Discovering' : 'Discover devices'}
               onPress={this.discoverUnpaired.bind(this)} />
           ) : null} */}
-          <Button
+          {/* <Button
             label='Write to device'
-            onPress={this.write.bind(this, 'test')} />
+            onPress={this.write.bind(this, 'test')} /> */}
         </View>
         
       </View> 

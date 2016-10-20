@@ -184,8 +184,7 @@ onPress() {
                 console.log(responseJson.body.password)
                 console.log(responseJson.body.login)
                 if (responseJson.status == 0){
-                    Actions.tabbar({session: responseJson.body.irissessionid});
-
+                    Actions.bluetooth({session: responseJson.body.irissessionid});
                 }
                 else{
                     var msg;

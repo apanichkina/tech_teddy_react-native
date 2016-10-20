@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import Button from "react-native-button";
 import {
@@ -20,11 +20,33 @@ export default class Story extends Component {
     this.state = {
       incommingData: '',
       connected: true,
-      device: props.device
+      device: props.device,
+      storyList: [],
+      end: false,
+      story: null
     }
+
+    this.ls = false
+    this.storyList = []
 
     this.handler = this.handlerLost.bind(this)
     this.read = this.readFunc.bind(this)
+  }
+
+  getStoryList () {
+    this.storyList = [];
+    this.write('l')
+    this.ls = true
+  }
+
+  play (filename) {
+    if (this.state.story === filename) {
+      this.write('s\n');
+      this.setState({ story: null })
+    } else {
+      this.write('s'+filename+'\n');
+      this.setState({ story: filename })
+    }
   }
 
   componentWillMount () {
@@ -32,10 +54,23 @@ export default class Story extends Component {
 
     BluetoothSerial.on('data', this.read);
 
-    this.subscribe('\n');
+    this.subscribe('\r\n');
+  }
+
+  componentDidMount () {
+    this.getStoryList();
   }
 
   readFunc (data) {
+    if (this.ls) {
+      this.storyList.push(data.data.slice(0,-2));
+    }
+    if (data.data === 'end\r\n') {
+      this.ls = false;
+      this.setState({ storyList: this.storyList })
+      this.setState({ end: true })
+    }
+
     this.setState({ incommingData: data.data })
   }
 
@@ -79,9 +114,9 @@ export default class Story extends Component {
         <Button
             containerStyle={styles.buttonStyle7}
             style={styles.textStyle6}
-            onPress={this.write.bind(this, 's')}>
-            Начать
-        </Button >
+            onPress={this.getStoryList.bind(this)}>
+            Список
+        </Button>
         <Button
             containerStyle={styles.buttonStyle6}
             style={styles.textStyle}
@@ -92,6 +127,24 @@ export default class Story extends Component {
           <Text>
              incomming data: {this.state.incommingData || 'nothing'} 
           </Text> 
+        </View>
+        <View>
+          <Text>
+             send: {this.state.story} 
+          </Text> 
+        </View>
+        <View style={styles.listContainer}>
+          {this.state.storyList.map((name, i) => {
+            if (name.endsWith('.raw')) {
+              return (
+                <TouchableOpacity key={`${name}_${i}`} style={styles.listItem} onPress={this.play.bind(this, name)}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text>{`<${name}>`}</Text>
+                  </View>
+                </TouchableOpacity>
+              )
+            }
+          })}
         </View> 
       </View> 
       )
@@ -119,6 +172,17 @@ const styles = StyleSheet.create({
         width: 120,
         height: 170
 
+    },
+    listContainer: {
+      marginTop: 5,
+      borderColor: '#ccc',
+      borderTopWidth: 0.5
+    },
+    listItem: {
+      flex: 1,
+      padding: 25,
+      borderColor: '#ccc',
+      borderBottomWidth: 0.5
     },
     textStyle: {
         color: 'white',
