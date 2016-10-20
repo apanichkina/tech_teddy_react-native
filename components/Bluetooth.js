@@ -25,6 +25,7 @@ var strings = {
     knownBears: 'Знакомые мишки',
     connectedTo: ' подключен',
     noConnection: '✗ не подключен',
+    connecting: 'пытаюсь…',
     activateBT: 'Включить Bluetooth',
     title: 'Выбери медведя'
 }
@@ -50,15 +51,22 @@ export default class Bluetooth extends Component {
             device: null
         }
 
+        this.expectDisconnect = false;
+
         this.handler = this.handlerLost.bind(this)
     }
 
     handlerLost () {
-        /* if (this.state.device) {
-         Toast.showLongBottom(`BLUETOOTH: Connection to device ${this.state.device.name} has been lost`)
-         } */
+      /* if (this.state.device) {
+      Toast.showLongBottom(`BLUETOOTH: Connection to device ${this.state.device.name} has been lost`)
+      } */
+      if (!this.expectDisconnect) {
         Toast.showLongBottom(`BLUETOOTH: Connection has been lost`)
-        this.setState({ connected: false })
+      } else {
+        this.expectDisconnect = false;
+      }
+
+      this.setState({ connected: false })
     }
 
     componentWillMount () {
@@ -100,11 +108,11 @@ export default class Bluetooth extends Component {
     }
 
     componentWillUnmount () {
-        BluetoothSerial.off('connectionLost', this.handler)
-        this.disconnect();
-        // BluetoothSerial.on('bluetoothEnabled', () => {})
-        // BluetoothSerial.on('bluetoothDisabled', () => {})
-        // BluetoothSerial.on('connectionLost', () => {})
+      BluetoothSerial.off('connectionLost', this.handler)
+      this.disconnect();
+      // BluetoothSerial.on('bluetoothEnabled', () => {})
+      // BluetoothSerial.on('bluetoothDisabled', () => {})
+      // BluetoothSerial.on('connectionLost', () => {})
     }
 
     enable () {
@@ -114,6 +122,7 @@ export default class Bluetooth extends Component {
     }
 
     disable () {
+        this.expectDisconnect = true;
         BluetoothSerial.disable()
             .then((res) => this.setState({ isEnabled: false }))
             .catch((err) => Toast.showLongBottom(err))
@@ -185,12 +194,12 @@ export default class Bluetooth extends Component {
      * Disconnect from bluetooth device
      */
     disconnect () {
-        BluetoothSerial.disconnect()
-            .then(() => {
-                // this.setState({ connected: false })
-                // this.unsubscribe();
-            })
-            .catch((err) => Toast.showLongBottom(err))
+      BluetoothSerial.disconnect()
+          .then(() => {
+              // this.setState({ connected: false })
+              // this.unsubscribe();
+          })
+          .catch((err) => Toast.showLongBottom(err))
     }
 
     /**
@@ -267,6 +276,10 @@ export default class Bluetooth extends Component {
                             ? (
                             <Text style={styles.connectionInfo}>
                                 ✓ {this.state.device.name}{strings.connectedTo}
+                            </Text>
+                        ) : this.state.connecting ? (
+                            <Text style={[styles.connectionInfo, { color: '#ff6523' }]}>
+                                {strings.connecting}
                             </Text>
                         ) : (
                             <Text style={[styles.connectionInfo, { color: '#ff6523' }]}>
