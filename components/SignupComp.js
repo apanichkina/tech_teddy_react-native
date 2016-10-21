@@ -14,6 +14,12 @@ import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
 import Button from 'react-native-button';
 import Loader from './Loader.js'
 
+const Realm = require('realm');
+const realm = new Realm({
+    schema: [{name: 'Token', primaryKey: 'name', properties: {name: 'string', token : 'string'}}]
+});
+
+
 var MessageBarAlert = require('react-native-message-bar').MessageBar;
 var MessageBarManager = require('react-native-message-bar').MessageBarManager;
 
@@ -175,6 +181,10 @@ onPress() {
                 if (responseJson.status == 0){
 
                     Actions.main({session: responseJson.body.irissessionid});
+                    realm.write(() =>   {
+                                            realm.create('Token', {name: 'bearToken', token:responseJson.body.bearToken});
+                                            realm.create('Token', {name: 'userToken', token:responseJson.body.userToken});
+                                        });
                 }
                 else{
                     var msg;

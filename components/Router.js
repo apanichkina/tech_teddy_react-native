@@ -28,7 +28,6 @@ const realm = new Realm({
     schema: [{name: 'Token', primaryKey: 'name', properties: {name: 'string', token : 'string'}}]
 });
 
-const isAuth = true;
 const reducerCreate = params=>{
     const defaultReducer = Reducer(params);
     return (state, action)=>{
@@ -38,15 +37,26 @@ const reducerCreate = params=>{
 };
 
 export default class HelloPage extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {isAuth: false};
+        let tokens = realm.objects('Token');
+        let bearToken = tokens.filtered('name = "bearToken"');
+        let bearStr = "";
+        if (bearToken.length == 1){
+                this.state = {isAuth: true};
+        }
+        console.log(this.state.isAuth)
+    }
     render() {
         return <Router createReducer={reducerCreate} sceneStyle={{backgroundColor:'#FFFFFF'}}>
         <Scene key="root" hideNavBar={true}>
-        <Scene key="launcher"  component={Launcher}  title="Добро пожаловать!" initial={!isAuth ? true : false} />
+        <Scene key="launcher"  component={Launcher}  title="Добро пожаловать!" initial={!this.state.isAuth ? true : false} />
         <Scene key="signin"  component={SignIn}  title="Логин" />
         <Scene key="signup" component={SignUp} title="Регистрация"/>
         <Scene key="tab5" component={Story} title="story" icon={TabIcon} hideNavBar={true} />
         <Scene key="tab4" component={WiFi} title="wifi" icon={TabIcon} hideNavBar={true}/>
-        <Scene key="main" type={ActionConst.RESET} initial={isAuth ? true : false}>
+        <Scene key="main" type={ActionConst.RESET} initial={this.state.isAuth ? true : false}>
             <Scene key="tabbar" tabs={true}>
                 <Scene key="tab3" component={Bluetooth} title="bluetooth" icon={TabIcon} hideNavBar={true} />                
                 <Scene key="store" component={Store} title="store" icon={TabIcon} hideNavBar={true} />
