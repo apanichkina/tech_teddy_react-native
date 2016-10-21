@@ -19,8 +19,9 @@ var movieReviewsFromApi = [
 ]
 const Item = Picker.Item;
 var stories = [];
-var categories = ['all', 'education', 'sleep', 'fun'];
-var orderTypes = ['asc', 'desc'];
+var categories = ['все', 'обучающие', 'колыбельные', 'развлекательные'];
+var orderField = ['имя', 'длительность', 'цена'];
+var orderTypes = ['по возрастанию', 'по убыванию'];
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 export default class StoryStore extends Component{
 
@@ -82,44 +83,64 @@ export default class StoryStore extends Component{
         return this.state.isRefreshing ?  <Loader/> : null
     }
     render() {
-
         return (
             <View style={styles.listParent}>
                 <View>
-                    <Text>Категории:</Text>
-        <Picker
-            style={styles.picker}
-            selectedValue={this.state.cat}
-            onValueChange={this.onValueChange.bind(this, 'cat')}
-            mode="dialog">
-            <Item label={categories[0]} value={categories[0]} />
-            <Item label={categories[1]} value={categories[1]} />
-            <Item label={categories[2]} value={categories[2]} />
-            <Item label={categories[3]} value={categories[3]} />
-        </Picker>
-                    <Text>Упорядочить:</Text>
-                <Picker
-                    style={styles.picker}
-                    selectedValue={this.state.ot}
-                    onValueChange={this.onValueChange.bind(this, 'ot')}
-                    mode="dialog">
-                    <Item label={orderTypes[0]} value={orderTypes[0]} />
-                    <Item label={orderTypes[1]} value={orderTypes[1]} />
-                </Picker>
-                    </View>
+                    <Text>Категория:</Text>
+                    <Picker
+                        style={styles.picker}
+                        selectedValue={this.state.cat}
+                        onValueChange={this.onValueChange.bind(this, 'cat')}
+                        mode="dialog"
+                        prompt="Категория:">
+                        { categories.map((s, i) => {
+                            return <Item
+                                        key={i}
+                                        value={s}
+                                        label={s} />
+                            }) }
+                    </Picker>
+                    <Text>Упорядочить по:</Text>
+                    <Picker
+                        style={styles.picker}
+                        selectedValue={this.state.order}
+                        onValueChange={this.onValueChange.bind(this, 'order')}
+                        mode="dialog"
+                        prompt="Упорядочить по:">
+                        { orderField.map((s, i) => {
+                            return <Item
+                                key={i}
+                                value={s}
+                                label={s} />
+                        }) }
+                    </Picker>
+                    <Text>Порядок сортировки:</Text>
+                    <Picker
+                        style={styles.picker}
+                        selectedValue={this.state.ot}
+                        onValueChange={this.onValueChange.bind(this, 'ot')}
+                        prompt="Порядок сортировки:">
+                        { orderTypes.map((s, i) => {
+                            return <Item
+                                key={i}
+                                value={s}
+                                label={s} />
+                            }) }
+                    </Picker>
+                </View>
                 <View style={styles.listParent}>
-            <ListView
-                dataSource={this.state.dataSource}
-                renderRow={(rowData) => StoryStore._renderRow(rowData)}
-                renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
-                renderSeparator={StoryStore._renderSeparator}
-                renderFooter={this.renderFooter.bind(this)}
-                onEndReached={this._onRefresh}
-                enableEmptySections={true}
-                onEndReachedThreshold={10}
-                scrollEventThrottle={10}
-                />
-                    </View>
+                    <ListView
+                        dataSource={this.state.dataSource}
+                        renderRow={(rowData) => StoryStore._renderRow(rowData)}
+                        renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
+                        renderSeparator={StoryStore._renderSeparator}
+                        renderFooter={this.renderFooter.bind(this)}
+                        onEndReached={this._onRefresh}
+                        enableEmptySections={true}
+                        onEndReachedThreshold={10}
+                        scrollEventThrottle={10}
+                        />
+                </View>
             </View>
         );
 
@@ -135,6 +156,8 @@ export default class StoryStore extends Component{
         const newState = {};
         newState[key] = value;
         this.setState(newState);
+
+        this._onRefresh();
     };
 
     static _renderSeparator(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {

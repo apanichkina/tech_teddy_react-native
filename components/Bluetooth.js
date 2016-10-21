@@ -275,7 +275,7 @@ export default class Bluetooth extends Component {
                         {this.state.connected
                             ? (
                             <Text style={styles.connectionInfo}>
-                                ✓ {this.state.device.name}{strings.connectedTo}
+                                ✓ {this.state.device.name} {strings.connectedTo}
                             </Text>
                         ) : this.state.connecting ? (
                             <Text style={[styles.connectionInfo, { color: '#ff6523' }]}>
