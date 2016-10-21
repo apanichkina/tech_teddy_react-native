@@ -33,15 +33,14 @@ export default class StoryStore extends Component{
             dataSource: ds.cloneWithRows([]),
             mode: Picker.MODE_DIALOG,
             order: 'name',
-            cat: categories[0].value,
+            cat: 'all',
             page: 0,
             allStories: false,
-            ordtype: 'asc'
+            ordtype: 'desc'
 
         };
     }
     componentDidMount() {
-        //this._getStartData()
         this._onRefresh(false);
     }
     onBuy(id) {
@@ -83,41 +82,7 @@ export default class StoryStore extends Component{
                 </Button >
             </View>)
     }
-    _getStartData() {
-        var url = 'http://hardteddy.ru/api/user/mystories';
-        console.log('urlFirst: ', url);
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImFubiIsInR5cGUiOiJ1c2VyIn0.hAxAvPxOJCm73rVwR54MwP7P3SKDmFG0Prsn_JGGzcQ'
-            }
-        }).then((response) => response.json())
-            .then((responseJson) => {
-                this.setState({
-                    internet:false
-                });
-                if(responseJson.status == 0){
-                    // Все хорошо
-                    //console.log(responseJson)
-                    //console.log('Status+ '+responseJson.status)
-                    //console.log('Telo '+responseJson.body)
-                    stories = responseJson.body.stories;
-                    this.setState({
-                        dataSource: ds.cloneWithRows(stories)
-                    })
 
-
-                }
-                else{
-                    console.log('Status+ '+responseJson.status)
-                    console.log('Err '+responseJson.body.err)
-                }
-            })
-            .catch((error) => {
-
-            });
-
-    }
 
     renderFooter () {
         return this.state.isRefreshing ?  <Loader/> : null
@@ -157,7 +122,7 @@ export default class StoryStore extends Component{
                     <Text>Порядок сортировки:</Text>
                     <Picker
                         style={styles.picker}
-                        selectedValue={this.state.ordtype || 'desc'}
+                        selectedValue={this.state.ordtype}
                         onValueChange={this.onValueChange.bind(this, 'ordtype')}
                         prompt="Порядок сортировки:">
                         { orderTypes.map((s, i) => {
@@ -168,6 +133,13 @@ export default class StoryStore extends Component{
                             }) }
                     </Picker>
                 </View>
+                <Button
+                    containerStyle={styles.buttonStyle7}
+                    style={styles.textStyle6}
+                    onPress={this._onRefresh.bind(this, false)}
+                    >
+                    Найти
+                </Button >
                 <View style={[styles.listParent, styles.container]}>
                     <ListView
                         dataSource={this.state.dataSource}
@@ -195,10 +167,13 @@ export default class StoryStore extends Component{
     onValueChange(key: string, value: string) {
         const newState = {};
         newState[key] = value;
+        console.log('Before set on valueChange: '+ this.state.ordtype)
         this.setState(newState);
+        //this.setState({ordtype: value});
         console.log('state: '+key+' '+value)
-        for (var i in this.state) { console.log(i); console.log(this.state[i]); }
-        this._onRefresh(false);
+        console.log('After set on valueChange: '+ this.state.ordtype)
+        //for (var i in this.state) { console.log(i); console.log(this.state[i]); }
+        //this._onRefresh(false);
     };
 
     static _renderSeparator(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
@@ -224,9 +199,8 @@ export default class StoryStore extends Component{
                 page: this.state.page + 1
             });
         }
-        console.log('ot: '+ this.state.ordtype);
-        console.log('stateФдд: ');
-        for (var i in this.state) { console.log(i); console.log(this.state[i]); }
+        console.log('Refresh ordtype: ' + this.state.ordtype);
+        //for (var i in this.state) { console.log(i); console.log(this.state[i]); }
         var url = 'http://hardteddy.ru/api/store/story/?order='+this.state.order+'&ordtype='+this.state.ordtype+'&cat='+this.state.cat+'&page='+this.state.page;
         console.log('url: '+ url);
         if (!this.state.allStories) {
@@ -251,14 +225,15 @@ export default class StoryStore extends Component{
                         this.setState({
                             allStories: true
                         })
-                    } else {
+                    }
+
                         if (isMore) {
                             stories=stories.concat(storiesNew);
                         } else {
                             stories=storiesNew;
                         }
-                        this.setState({dataSource: ds.cloneWithRows(stories)})
-                    }
+                    this.setState({dataSource: ds.cloneWithRows(stories)})
+
 
                     this.setState({
                         isRefreshing: false
@@ -319,6 +294,18 @@ var styles = StyleSheet.create({
         borderRadius: 3,
         borderWidth: 1,
         padding: 1
+    },
+    buttonStyle7: {
+        borderColor: '#8e44ad',
+        backgroundColor: '#ffffff',
+        borderRadius: 3,
+        borderWidth: 3,
+        padding: 10,
+        marginVertical: 15
+    },
+    textStyle6: {
+        color: '#8e44ad',
+        textAlign: 'center'
     }
 });
 
