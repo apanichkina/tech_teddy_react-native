@@ -54,8 +54,12 @@ export default class HelloPage extends React.Component {
         <Scene key="launcher"  component={Launcher}  title="Добро пожаловать!" initial={!this.state.isAuth ? true : false} />
         <Scene key="signin"  component={SignIn}  title="Логин" />
         <Scene key="signup" component={SignUp} title="Регистрация"/>
-        <Scene key="tab5" component={Story} title="story" icon={TabIcon} hideNavBar={true} />
-        <Scene key="tab4" component={WiFi} title="wifi" icon={TabIcon} hideNavBar={true}/>
+        <Scene key="tab4" component={WiFi} title="wifi" icon={TabIcon} hideNavBar={true} />
+        <Scene key="mishka" tabs={true}>
+            <Scene key="story" component={Story} title="Story" icon={TabIcon} hideNavBar={true} />
+            <Scene key="education" component={Education} title="Education" icon={TabIcon} hideNavBar={true} />        
+            <Scene key="clockalarm" component={ClockAlarm} title="ClockAlarm" icon={TabIcon} hideNavBar={true} />
+        </Scene>
         <Scene key="main" type={ActionConst.RESET} initial={this.state.isAuth ? true : false}>
             <Scene key="tabbar" tabs={true}>
                 <Scene key="tab3" component={Bluetooth} title="bluetooth" icon={TabIcon} hideNavBar={true} />                
