@@ -86,7 +86,7 @@ export default class StoryStore extends Component{
         return (
             <View style={styles.listParent}>
                 <View>
-                    <Text>Отсортировать по:</Text>
+                    <Text>Категории:</Text>
         <Picker
             style={styles.picker}
             selectedValue={this.state.cat}
@@ -97,7 +97,7 @@ export default class StoryStore extends Component{
             <Item label={categories[2]} value={categories[2]} />
             <Item label={categories[3]} value={categories[3]} />
         </Picker>
-                    <Text>Порядок сортировки:</Text>
+                    <Text>Упорядочить:</Text>
                 <Picker
                     style={styles.picker}
                     selectedValue={this.state.ot}

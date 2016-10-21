@@ -17,6 +17,9 @@ import TabIcon from './TabIcon'
 import WiFi from './WiFi'
 import Bluetooth from './Bluetooth'
 import Story from './Story'
+import ClockAlarm from './ClockAlarm'
+import Education from './Education'
+
 import Store from './StoryStore'
 import Page from './Page'
 const Realm = require('realm');
@@ -40,16 +43,15 @@ export default class HelloPage extends React.Component {
         <Scene key="launcher"  component={Launcher}  title="Добро пожаловать!" initial />
         <Scene key="signin"  component={SignIn}  title="Логин" />
         <Scene key="signup" component={SignUp} title="Регистрация"/>
-            <Scene key="main" type={ActionConst.RESET}>
+        <Scene key="tab5" component={Story} title="story" icon={TabIcon} hideNavBar={true} />
+        <Scene key="tab4" component={WiFi} title="wifi" icon={TabIcon} hideNavBar={true}/>
+        <Scene key="main" type={ActionConst.RESET}>
             <Scene key="tabbar" tabs={true}>
-                <Scene key="tab3" component={Bluetooth} title="bluetooth" icon={TabIcon} hideNavBar={true} />
-                <Scene key="tab4" component={WiFi} title="wifi" icon={TabIcon} hideNavBar={true}/>
-                <Scene key="tab5" component={Story} title="story" icon={TabIcon} hideNavBar={true} />
+                <Scene key="tab3" component={Bluetooth} title="bluetooth" icon={TabIcon} hideNavBar={true} />                
                 <Scene key="store" component={Store} title="store" icon={TabIcon} hideNavBar={true} />
             </Scene>
-
-            </Scene>
-            <Scene key="page" component={Page} title="story"  hideNavBar={true} />
+        </Scene>
+        <Scene key="page" component={Page} title="story" hideNavBar={true} />
         </Scene>
 
         </Router>;

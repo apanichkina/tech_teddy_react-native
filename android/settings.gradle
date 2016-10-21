@@ -7,3 +7,7 @@ include ':react-native-fcm'
 project(':react-native-fcm').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fcm/android')
 include ':realm'
 project(':realm').projectDir = new File(rootProject.projectDir, '../node_modules/realm/android')
+include ':react-native-bluetooth-hc05'
+project(':react-native-bluetooth-hc05').projectDir = new File(settingsDir, '../node_modules/react-native-bluetooth-hc05/android')
+include ':react-native-toast'
+project(':react-native-toast').projectDir = new File(settingsDir, '../node_modules/@remobile/react-native-toast/android')

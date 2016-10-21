@@ -75,6 +75,7 @@ var options = {
             label: 'Email:',
             placeholder:'Ваша невероятная почта',
             underlineColorAndroid: "transparent"
+
         },
         password1: {
             label: 'Пароль:',
@@ -91,6 +92,10 @@ var options = {
         }
     }
 };
+
+
+
+
 
 class SignUp extends Component {
     componentDidMount() {

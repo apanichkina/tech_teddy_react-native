@@ -213,6 +213,7 @@ var styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#ffffff',
         padding: 20
+        //alignItems: 'stretch'
     }
 });
 
