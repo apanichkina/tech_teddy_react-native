@@ -136,7 +136,7 @@ export default class StoryStore extends Component{
                 <Button
                     containerStyle={styles.buttonStyle7}
                     style={styles.textStyle6}
-                    onPress={this._onRefresh.bind(this, false)}
+                    onPress={this._onRefresh.bind(this,false)}
                     >
                     Найти
                 </Button >
@@ -147,7 +147,7 @@ export default class StoryStore extends Component{
                         renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
                         renderSeparator={StoryStore._renderSeparator}
                         renderFooter={this.renderFooter.bind(this)}
-                        onEndReached={this._onRefresh.bind(this, true)}
+                        onEndReached={this._onRefresh.bind(this, false)}
                         enableEmptySections={true}
                         onEndReachedThreshold={10}
                         scrollEventThrottle={10}
@@ -172,6 +172,10 @@ export default class StoryStore extends Component{
         //this.setState({ordtype: value});
         console.log('state: '+key+' '+value)
         console.log('After set on valueChange: '+ this.state.ordtype)
+        this.setState({
+            page: 0,
+            allStories:false
+        })
         //for (var i in this.state) { console.log(i); console.log(this.state[i]); }
         //this._onRefresh(false);
     };
@@ -187,7 +191,13 @@ export default class StoryStore extends Component{
                 />
         );
     }
-
+    onSearch() {
+        this.setState({
+            page: 0,
+            allStories:false
+        });
+        //this._onRefresh.(false);
+    }
     _onRefresh(isMore) {
         if (!isMore) {
             this.setState({
@@ -195,6 +205,7 @@ export default class StoryStore extends Component{
                 allStories:false
             })
         }else {
+            if(!this.state.allStories)
             this.setState({
                 page: this.state.page + 1
             });
@@ -217,7 +228,7 @@ export default class StoryStore extends Component{
                 });
                 if(responseJson.status == 0){
                     // Все хорошо
-                    //console.log(responseJson)
+                    console.log(responseJson)
                     //console.log('Status+ '+responseJson.status)
                     var storiesNew = responseJson.body.stories;
                     if (storiesNew.length == 0)  {
@@ -232,6 +243,7 @@ export default class StoryStore extends Component{
                         } else {
                             stories=storiesNew;
                         }
+                    //stories=storiesNew;
                     this.setState({dataSource: ds.cloneWithRows(stories)})
 
 
