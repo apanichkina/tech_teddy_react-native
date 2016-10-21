@@ -13,15 +13,17 @@ import {
     } from 'react-native';
 import Loader from './Loader.js'
 
-
+import Button from "react-native-button";
 var movieReviewsFromApi = [
     {name: 'Die Hard'}, {name: 'Home Alone 2'}, {name: 'Bourne Identity'}, {name: 'Die Hard'}, {name: 'Home Alone 2'}, {name: 'Bourne Identity'}, {name: 'Die Hard'}, {name: 'Home Alone 2'}, {name: 'Bourne Identity'},  {name: 'Die Hard'}, {name: 'Home Alone 2'}, {name: 'Bourne Identity'},  {name: 'Die Hard'}, {name: 'Home Alone 2'}, {name: 'Bourne Identity'}
 ]
 const Item = Picker.Item;
 var stories = [];
-var categories = ['все', 'обучающие', 'колыбельные', 'развлекательные'];
+var categories = [{label:'все', value:'all'}, {label:'обучающие', value:'1'}, {label: 'колыбельные', value:'2'}, {label: 'развлекательные', value:'3'}];
 var orderField = ['имя', 'длительность', 'цена'];
-var orderTypes = ['по возрастанию', 'по убыванию'];
+var orderTypes = [{label:'по возрастанию', value:'asc'}, {label:'по убыванию', value:'desc'}];
+var orderTypes1 = [{value:'asc'}, { value:'desc'}];
+var names = {asc: 'возрастание', desc: 'убывание'};
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 export default class StoryStore extends Component{
 
@@ -30,23 +32,63 @@ export default class StoryStore extends Component{
         this.state = {
             isRefreshing: false,
             internet:false,
-            dataSource: ds.cloneWithRows(movieReviewsFromApi),
+            dataSource: ds.cloneWithRows([]),
             mode: Picker.MODE_DIALOG,
-            color: 'red',
-            color1: 'red1',
             order: 'name',
-            ot: orderTypes[0],
-            cat: categories[0]
+            cat: categories[0].value,
+            page: 0,
+            allStories: false,
+            ordtype: 'asc'
+
         };
     }
     componentDidMount() {
-        this._getStartData()
+        //this._getStartData()
+        this._onRefresh(false);
     }
-    static _renderRow (rowData) {
-        return (<View style={styles.row}><Text style={styles.text}>{rowData.name}</Text></View>)
+    onBuy(id) {
+        fetch('http://hardteddy.ru/api/store/buy', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImFubiIsInR5cGUiOiJ1c2VyIn0.hAxAvPxOJCm73rVwR54MwP7P3SKDmFG0Prsn_JGGzcQ'
+            },
+            body: JSON.stringify({
+                storyID: id
+            })
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                console.log(responseJson);
+                if (responseJson.status == 0){
+
+
+                }
+                else{
+
+                }
+            }).catch((error) => {
+            });
+    }
+    _renderRow (rowData) {
+        return (
+            <View style={styles.row}>
+                <Text style={styles.text}>Название: {rowData.name}</Text>
+                <Text style={styles.text}>Длительность: {rowData.minutes}:{rowData.seconds}</Text>
+                <Text style={styles.text}>Цена: {rowData.price} руб.</Text>
+                <Button
+                    containerStyle={styles.buttonStyle}
+                    style={styles.textStyle}
+                    onPress={this.onBuy.bind(this, rowData.id)}
+                   >
+                    Купить
+                </Button >
+            </View>)
     }
     _getStartData() {
-        fetch('http://hardteddy.ru/api/user/mystories', {
+        var url = 'http://hardteddy.ru/api/user/mystories';
+        console.log('urlFirst: ', url);
+        fetch(url, {
             method: 'GET',
             headers: {
                 'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImFubiIsInR5cGUiOiJ1c2VyIn0.hAxAvPxOJCm73rVwR54MwP7P3SKDmFG0Prsn_JGGzcQ'
@@ -58,9 +100,9 @@ export default class StoryStore extends Component{
                 });
                 if(responseJson.status == 0){
                     // Все хорошо
-                    console.log(responseJson)
-                    console.log('Status+ '+responseJson.status)
-                    console.log('Telo '+responseJson.body)
+                    //console.log(responseJson)
+                    //console.log('Status+ '+responseJson.status)
+                    //console.log('Telo '+responseJson.body)
                     stories = responseJson.body.stories;
                     this.setState({
                         dataSource: ds.cloneWithRows(stories)
@@ -96,8 +138,8 @@ export default class StoryStore extends Component{
                         { categories.map((s, i) => {
                             return <Item
                                         key={i}
-                                        value={s}
-                                        label={s} />
+                                        value={s.value}
+                                        label={s.label} />
                             }) }
                     </Picker>
                     <Text>Упорядочить по:</Text>
@@ -117,25 +159,25 @@ export default class StoryStore extends Component{
                     <Text>Порядок сортировки:</Text>
                     <Picker
                         style={styles.picker}
-                        selectedValue={this.state.ot}
-                        onValueChange={this.onValueChange.bind(this, 'ot')}
+                        selectedValue={this.state.ordtype || 'desc'}
+                        onValueChange={this.onValueChange.bind(this, 'ordtype')}
                         prompt="Порядок сортировки:">
                         { orderTypes.map((s, i) => {
                             return <Item
                                 key={i}
-                                value={s}
-                                label={s} />
+                                value={s.value}
+                                label={s.label} />
                             }) }
                     </Picker>
                 </View>
-                <View style={styles.listParent}>
+                <View style={[styles.listParent, styles.container]}>
                     <ListView
                         dataSource={this.state.dataSource}
-                        renderRow={(rowData) => StoryStore._renderRow(rowData)}
+                        renderRow={(rowData) => this._renderRow(rowData)}
                         renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
                         renderSeparator={StoryStore._renderSeparator}
                         renderFooter={this.renderFooter.bind(this)}
-                        onEndReached={this._onRefresh}
+                        onEndReached={this._onRefresh.bind(this, true)}
                         enableEmptySections={true}
                         onEndReachedThreshold={10}
                         scrollEventThrottle={10}
@@ -145,19 +187,20 @@ export default class StoryStore extends Component{
         );
 
     }
-    changeMode = () => {
+    changeMode() {
         const newMode = this.state.mode === Picker.MODE_DIALOG
             ? Picker.MODE_DROPDOWN
             : Picker.MODE_DIALOG;
         this.setState({mode: newMode});
     };
 
-    onValueChange = (key: string, value: string) => {
+    onValueChange(key: string, value: string) {
         const newState = {};
         newState[key] = value;
         this.setState(newState);
-
-        this._onRefresh();
+        console.log('state: '+key+' '+value)
+        for (var i in this.state) { console.log(i); console.log(this.state[i]); }
+        this._onRefresh(false);
     };
 
     static _renderSeparator(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
@@ -171,9 +214,26 @@ export default class StoryStore extends Component{
                 />
         );
     }
-    _onRefresh = () => {
-        this.setState({isRefreshing: true});
-        fetch('http://hardteddy.ru/api/store/story', {
+
+    _onRefresh(isMore) {
+        if (!isMore) {
+            this.setState({
+                page: 0,
+                allStories:false
+            })
+        }else {
+            this.setState({
+                page: this.state.page + 1
+            });
+        }
+        console.log('ot: '+ this.state.ordtype);
+        console.log('stateФдд: ');
+        for (var i in this.state) { console.log(i); console.log(this.state[i]); }
+        var url = 'http://hardteddy.ru/api/store/story/?ordtype='+this.state.ordtype+'&cat='+this.state.cat+'&page='+this.state.page;
+        console.log('url: '+ url);
+        if (!this.state.allStories) {
+            this.setState({isRefreshing: true});
+        fetch(url, {
             method: 'GET',
             headers: {
                 'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImFubiIsInR5cGUiOiJ1c2VyIn0.hAxAvPxOJCm73rVwR54MwP7P3SKDmFG0Prsn_JGGzcQ'
@@ -185,16 +245,26 @@ export default class StoryStore extends Component{
                 });
                 if(responseJson.status == 0){
                     // Все хорошо
-                    console.log(responseJson)
-                    console.log('Status+ '+responseJson.status)
-                    console.log('Telo '+responseJson.body)
+                    //console.log(responseJson)
+                    //console.log('Status+ '+responseJson.status)
                     var storiesNew = responseJson.body.stories;
-                    stories=stories.concat(storiesNew);
+                    if (storiesNew.length == 0)  {
+                        console.log("AllStoriesYet");
+                        this.setState({
+                            allStories: true
+                        })
+                    } else {
+                        if (isMore) {
+                            stories=stories.concat(storiesNew);
+                        } else {
+                            stories=storiesNew;
+                        }
+                        this.setState({dataSource: ds.cloneWithRows(stories)})
+                    }
+
                     this.setState({
-                        dataSource: ds.cloneWithRows(stories),
                         isRefreshing: false
                     })
-
 
                 }
                 else{
@@ -205,21 +275,18 @@ export default class StoryStore extends Component{
             .catch((error) => {
 
             });
-
-        //setTimeout(() => {
-        //
-        //
-        //    var data = stories.concat(movieReviewsFromApi);
-        //    this.setState({
-        //        dataSource: ds.cloneWithRows(data),
-        //        isRefreshing: false
-        //    });
-        //}, 2000);
+        }
     };
 
 
 }
 var styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: '#ffffff',
+        paddingBottom: 50
+    },
     listParent: {
         flex: 1
     },
@@ -238,6 +305,22 @@ var styles = StyleSheet.create({
     },
     text: {
         flex: 1
+    },
+    textStyle: {
+        fontSize: 6,
+        color: '#8e44ad',
+        textAlign: 'center'
+    },
+    buttonStylePressing: {
+        borderColor: 'red',
+        backgroundColor: 'red'
+    },
+    buttonStyle: {
+        borderColor: '#8e44ad',
+        backgroundColor: '#8e44ad',
+        borderRadius: 3,
+        borderWidth: 1,
+        padding: 1
     }
 });
 

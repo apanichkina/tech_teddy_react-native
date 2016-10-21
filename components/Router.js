@@ -21,13 +21,14 @@ import ClockAlarm from './ClockAlarm'
 import Education from './Education'
 
 import Store from './StoryStore'
+import Account from './Account'
 import Page from './Page'
 const Realm = require('realm');
 const realm = new Realm({
     schema: [{name: 'Token', primaryKey: 'name', properties: {name: 'string', token : 'string'}}]
 });
 
-const isAuth = false;
+const isAuth = true;
 const reducerCreate = params=>{
     const defaultReducer = Reducer(params);
     return (state, action)=>{
@@ -49,6 +50,7 @@ export default class HelloPage extends React.Component {
             <Scene key="tabbar" tabs={true}>
                 <Scene key="tab3" component={Bluetooth} title="bluetooth" icon={TabIcon} hideNavBar={true} />                
                 <Scene key="store" component={Store} title="store" icon={TabIcon} hideNavBar={true} />
+                <Scene key="account" component={Account} title="account" icon={TabIcon} hideNavBar={true} />
             </Scene>
         </Scene>
         <Scene key="page" component={Page} title="story" hideNavBar={true} />
