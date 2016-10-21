@@ -27,7 +27,7 @@ const realm = new Realm({
     schema: [{name: 'Token', primaryKey: 'name', properties: {name: 'string', token : 'string'}}]
 });
 
-
+const isAuth = false;
 const reducerCreate = params=>{
     const defaultReducer = Reducer(params);
     return (state, action)=>{
@@ -40,12 +40,12 @@ export default class HelloPage extends React.Component {
     render() {
         return <Router createReducer={reducerCreate} sceneStyle={{backgroundColor:'#FFFFFF'}}>
         <Scene key="root" hideNavBar={true}>
-        <Scene key="launcher"  component={Launcher}  title="Добро пожаловать!" initial />
+        <Scene key="launcher"  component={Launcher}  title="Добро пожаловать!" initial={!isAuth ? true : false} />
         <Scene key="signin"  component={SignIn}  title="Логин" />
         <Scene key="signup" component={SignUp} title="Регистрация"/>
         <Scene key="tab5" component={Story} title="story" icon={TabIcon} hideNavBar={true} />
         <Scene key="tab4" component={WiFi} title="wifi" icon={TabIcon} hideNavBar={true}/>
-        <Scene key="main" type={ActionConst.RESET}>
+        <Scene key="main" type={ActionConst.RESET} initial={isAuth ? true : false}>
             <Scene key="tabbar" tabs={true}>
                 <Scene key="tab3" component={Bluetooth} title="bluetooth" icon={TabIcon} hideNavBar={true} />                
                 <Scene key="store" component={Store} title="store" icon={TabIcon} hideNavBar={true} />
