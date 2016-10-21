@@ -183,7 +183,7 @@ export default class Bluetooth extends Component {
                  return item.id !== device.id;
                  }); */
                 this.setState({ device, connected: true, connecting: false })
-                Actions.tabbar({ device: device });
+                Actions.mishka({ device: device });
             })
             .catch((err) => {
                 this.setState({ connected: false, connecting: false })

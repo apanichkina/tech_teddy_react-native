@@ -80,7 +80,7 @@ export default class Story extends Component {
     } */
     Toast.showLongBottom(`STORY: Connection has been lost`)
     this.setState({ connected: false })
-    Actions.pop();
+    //Actions.pop();
   }
 
   componentWillUnmount () {
