@@ -20,10 +20,8 @@ var movieReviewsFromApi = [
 const Item = Picker.Item;
 var stories = [];
 var categories = [{label:'все', value:'all'}, {label:'обучающие', value:'1'}, {label: 'колыбельные', value:'2'}, {label: 'развлекательные', value:'3'}];
-var orderField = ['имя', 'длительность', 'цена'];
+var orderField = [{label:'имя', value:'name'}, {label:'длительность', value:'duration'}, {label: 'цена', value:'price'}];
 var orderTypes = [{label:'по возрастанию', value:'asc'}, {label:'по убыванию', value:'desc'}];
-var orderTypes1 = [{value:'asc'}, { value:'desc'}];
-var names = {asc: 'возрастание', desc: 'убывание'};
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 export default class StoryStore extends Component{
 
@@ -152,8 +150,8 @@ export default class StoryStore extends Component{
                         { orderField.map((s, i) => {
                             return <Item
                                 key={i}
-                                value={s}
-                                label={s} />
+                                value={s.value}
+                                label={s.label} />
                         }) }
                     </Picker>
                     <Text>Порядок сортировки:</Text>
@@ -229,7 +227,7 @@ export default class StoryStore extends Component{
         console.log('ot: '+ this.state.ordtype);
         console.log('stateФдд: ');
         for (var i in this.state) { console.log(i); console.log(this.state[i]); }
-        var url = 'http://hardteddy.ru/api/store/story/?ordtype='+this.state.ordtype+'&cat='+this.state.cat+'&page='+this.state.page;
+        var url = 'http://hardteddy.ru/api/store/story/?order='+this.state.order+'&ordtype='+this.state.ordtype+'&cat='+this.state.cat+'&page='+this.state.page;
         console.log('url: '+ url);
         if (!this.state.allStories) {
             this.setState({isRefreshing: true});

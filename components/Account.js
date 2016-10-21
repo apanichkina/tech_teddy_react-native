@@ -63,12 +63,12 @@ export default class Account extends Component {
                         refreshControl={
                             <RefreshControl
                                 refreshing={this.state.isRefreshing}
-                                onRefresh={this.getList()}
+                                onRefresh={this._onRefresh}
                                 tintColor="#ff0000"
                                 title="Loading..."
                                 titleColor="#00ff00"
-                                colors={['#ff0000', '#00ff00', '#0000ff']}
-                                progressBackgroundColor="#ffff00"
+                                colors={['#ffffff']}
+                                progressBackgroundColor="#8e44ad"
                             />
                         }
                         />
@@ -76,6 +76,38 @@ export default class Account extends Component {
             </View>
         )
     }
+    _onRefresh = () => {
+        this.setState({isRefreshing: true});
+        setTimeout(() => {
+            // prepend 10 items
+            var url = 'http://hardteddy.ru/api/user/mystories';
+            console.log('url: '+ url);
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImFubiIsInR5cGUiOiJ1c2VyIn0.hAxAvPxOJCm73rVwR54MwP7P3SKDmFG0Prsn_JGGzcQ'
+                }
+            }).then((response) => response.json())
+                .then((responseJson) => {
+                    if(responseJson.status == 0){
+                        stories = responseJson.body.stories;
+                        this.setState({
+                            dataSource: ds.cloneWithRows(stories)
+                        })
+                    }
+                    else{
+                        console.log('Status+ '+responseJson.status);
+                        console.log('Err '+responseJson.body.err)
+                    }
+                })
+                .catch((error) => {
+
+                });
+            this.setState({
+                isRefreshing: false
+            });
+        }, 2000);
+    };
     getList() {
        // this.setState({isRefreshing: true});
         var url = 'http://hardteddy.ru/api/user/mystories';
