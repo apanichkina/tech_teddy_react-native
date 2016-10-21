@@ -16,6 +16,7 @@ const realm = new Realm({
     schema: [{name: 'Token', primaryKey: 'name', properties: {name: 'string', token : 'string'}}]
 });
 
+
 var MessageBarAlert = require('react-native-message-bar').MessageBar;
 var MessageBarManager = require('react-native-message-bar').MessageBarManager;
 
@@ -32,6 +33,7 @@ var Password = t.refinement(t.String, function (str) { return str.length >= 6});
 Password.getValidationErrorMessage = function (value, path, context) {
 		return 'слишком мало символов';
 };
+
 
 var Person = t.struct({
 	name: Name,
@@ -140,7 +142,10 @@ class SignIn extends Component {
                     	// Все хорошо
 
                     Actions.main({session: responseJson.body.irissessionid});
-
+                    realm.write(() =>   {
+                                            realm.create('Token', {name: 'bearToken', token:responseJson.body.bearToken});
+                                            realm.create('Token', {name: 'userToken', token:responseJson.body.userToken});
+                                        });
                     }
                     else{
                     	MessageBarManager.showAlert({
