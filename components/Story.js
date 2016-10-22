@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { 
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  RecyclerViewBackedScrollView,
+  RefreshControl
+} from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import Button from "react-native-button";
 import {
@@ -10,7 +17,8 @@ import BluetoothSerial from 'react-native-bluetooth-hc05'
 import Toast from '@remobile/react-native-toast'
 
 var strings = {
-  title: "Сказки"
+  title: 'Сказки',
+  disconnected: 'Разрыв соединения'
 }
 
 export default class Story extends Component {
@@ -23,6 +31,7 @@ export default class Story extends Component {
       device: props.device,
       storyList: [],
       end: false,
+      isRefreshing: false,
       story: null
     }
 
@@ -40,9 +49,13 @@ export default class Story extends Component {
   }
 
   play (filename) {
-    if (this.state.story === filename) {
-      this.write('s\n');
-      this.setState({ story: null })
+    if (this.state.story) {
+      if (this.state.story === filename) {
+        this.write('p\n');
+      } else {
+        this.write('s'+filename+'\n');
+        this.setState({ story: filename })
+      }
     } else {
       this.write('s'+filename+'\n');
       this.setState({ story: filename })
@@ -51,9 +64,7 @@ export default class Story extends Component {
 
   componentWillMount () {
     BluetoothSerial.on('connectionLost', this.handler)
-
     BluetoothSerial.on('data', this.read);
-
     this.subscribe('\r\n');
   }
 
@@ -78,7 +89,7 @@ export default class Story extends Component {
     /* if (this.state.device) {
       Toast.showLongBottom(`STORY: Connection to device ${this.state.device.name} has been lost`)
     } */
-    Toast.showLongBottom(`STORY: Connection has been lost`)
+    Toast.showLongBottom(strings.disconnected)
     this.setState({ connected: false })
     //Actions.pop();
   }
@@ -107,21 +118,33 @@ export default class Story extends Component {
     .catch((err) => Toast.showLongBottom(err))
   }
 
+  _onRefresh = () => {
+    this.getStoryList();
+  };
+
   render() {
       return (
-      <View style={styles.container}>
+      <View
+        style={styles.container}
+        renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
+        refreshControl={
+          <RefreshControl
+              refreshing={this.state.isRefreshing}
+              onRefresh={this._onRefresh}
+              tintColor="#ff0000"
+              title="Loading..."
+              titleColor="#00ff00"
+              colors={['#ffffff']}
+              progressBackgroundColor="#8e44ad"
+          />
+        }
+      >
         <Text style={styles.heading}>{strings.title}</Text>
         <Button
             containerStyle={styles.buttonStyle7}
             style={styles.textStyle6}
             onPress={this.getStoryList.bind(this)}>
             Список
-        </Button>
-        <Button
-            containerStyle={styles.buttonStyle6}
-            style={styles.textStyle}
-            onPress={this.write.bind(this, 'p')}>
-            Пауза
         </Button>
         <View>
           <Text>
@@ -137,7 +160,10 @@ export default class Story extends Component {
           {this.state.storyList.map((name, i) => {
             if (name.endsWith('.raw')) {
               return (
-                <TouchableOpacity key={`${name}_${i}`} style={styles.listItem} onPress={this.play.bind(this, name)}>
+                <TouchableOpacity
+                  key={`${name}_${i}`}
+                  style={styles.listItem}
+                  onPress={this.play.bind(this, name)}>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text>{`<${name}>`}</Text>
                   </View>
