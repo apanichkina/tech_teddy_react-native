@@ -1,6 +1,6 @@
 import React, {
     PropTypes,
-    } from 'react';
+} from 'react';
 
 import { View, Text, StyleSheet, Image } from 'react-native';
 const propTypes = {
@@ -15,6 +15,18 @@ const TabIcon = (props) => (
          style={{ width: 35,height: 35, tintColor: props.selected ? '#8e44ad' : '#9E9E9E' }}
          source={require('../img/accessible_white_24dp.png')}
          /> */}
+        {props.title == 'clockalarm' &&
+        <Image
+            style={{ width: 35,height: 35, tintColor: props.selected ? '#8e44ad' : '#9E9E9E' }}
+            source={require('../img/ic_alarm_white_24dp.png')}
+            />
+        }
+        {props.title == 'story' &&
+        <Image
+            style={{ width: 35,height: 35, tintColor: props.selected ? '#8e44ad' : '#9E9E9E' }}
+            source={require('../img/story_white_24dp.png')}
+            />
+        }
         {props.title == 'store' &&
         <Image
             style={{ width: 35,height: 35, tintColor: props.selected ? '#8e44ad' : '#9E9E9E' }}
@@ -33,7 +45,7 @@ const TabIcon = (props) => (
             source={require('../img/wifi_white_24dp.png')}
             />
         }
-        {props.title == 'story' &&
+        {props.title == 'education' &&
         <Image
             style={{ width: 35,height: 35, tintColor: props.selected ? '#8e44ad' : '#9E9E9E' }}
             source={require('../img/play_arrow_white_24dp.png')}

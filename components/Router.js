@@ -23,10 +23,21 @@ import Education from './Education'
 import Store from './StoryStore'
 import Account from './Account'
 import Page from './Page'
+
+import BluetoothSerial from 'react-native-bluetooth-hc05'
+import Toast from '@remobile/react-native-toast'
+
 const Realm = require('realm');
 const realm = new Realm({
     schema: [{name: 'Token', primaryKey: 'name', properties: {name: 'string', token : 'string'}}]
 });
+
+global.device = false;
+
+const strings = {
+  title: 'Сказки',
+  disconnected: 'Разрыв соединения'
+}
 
 const reducerCreate = params=>{
     const defaultReducer = Reducer(params);
@@ -47,7 +58,29 @@ export default class HelloPage extends React.Component {
                 this.state = {isAuth: true};
         }
         console.log(this.state.isAuth)
+
+        // BLUETOOTH
+        this.handler = this.handlerLost.bind(this)
     }
+
+    componentWillMount() {
+        BluetoothSerial.on('connectionLost', this.handler)
+    }
+
+    componentWIllUnmount() {
+        BluetoothSerial.off('connectionLost', this.handler)
+    }
+
+    handlerLost () {
+        /* if (this.state.device) {
+          Toast.showLongBottom(`STORY: Connection to device ${this.state.device.name} has been lost`)
+        } */
+        Toast.showLongBottom('ROUTER: '+strings.disconnected)
+        this.setState({ connected: false })
+        global.device = false;
+        // Actions.pop();
+    }
+
     render() {
         return <Router createReducer={reducerCreate} sceneStyle={{backgroundColor:'#FFFFFF'}}>
         <Scene key="root" hideNavBar={true}>
@@ -56,9 +89,9 @@ export default class HelloPage extends React.Component {
         <Scene key="signup" component={SignUp} title="Регистрация"/>
         <Scene key="tab4" component={WiFi} title="wifi" icon={TabIcon} hideNavBar={true} />
         <Scene key="mishka" tabs={true}>
-            <Scene key="story" component={Story} title="Story" icon={TabIcon} hideNavBar={true} />
-            <Scene key="education" component={Education} title="Education" icon={TabIcon} hideNavBar={true} />        
-            <Scene key="clockalarm" component={ClockAlarm} title="ClockAlarm" icon={TabIcon} hideNavBar={true} />
+            <Scene key="story" component={Story} title="story" icon={TabIcon} hideNavBar={true} />
+            <Scene key="education" component={Education} title="education" icon={TabIcon} hideNavBar={true} />        
+            <Scene key="clockalarm" component={ClockAlarm} title="clockalarm" icon={TabIcon} hideNavBar={true} />
         </Scene>
         <Scene key="main" type={ActionConst.RESET} initial={this.state.isAuth ? true : false}>
             <Scene key="tabbar" tabs={true}>
@@ -67,7 +100,7 @@ export default class HelloPage extends React.Component {
                 <Scene key="account" component={Account} title="account" icon={TabIcon} hideNavBar={true} />
             </Scene>
         </Scene>
-        <Scene key="page" component={Page} title="story" hideNavBar={true} />
+        <Scene key="page" component={Page} title="stortty" hideNavBar={true} />
         </Scene>
 
         </Router>;

@@ -72,12 +72,17 @@ export default class Bluetooth extends Component {
     componentWillMount () {
         Promise.all([
             BluetoothSerial.isEnabled(),
-            BluetoothSerial.list()
+            BluetoothSerial.list(),
+            BluetoothSerial.isConnected()
         ])
             .then((values) => {
-                const [ isEnabled, devices ] = values
-                this.setState({ isEnabled, devices })
+                const [ isEnabled, devices, connected ] = values
+                this.setState({ isEnabled, devices, connected })
             })
+
+        if (global.device) {
+            this.setState({device: global.device});
+        }
 
         BluetoothSerial.on('bluetoothEnabled', () => {
             Toast.showLongBottom('Bluetooth enabled')
@@ -183,6 +188,7 @@ export default class Bluetooth extends Component {
                  return item.id !== device.id;
                  }); */
                 this.setState({ device, connected: true, connecting: false })
+                global.device = device;
                 Actions.mishka({ device: device });
             })
             .catch((err) => {
@@ -212,6 +218,12 @@ export default class Bluetooth extends Component {
         } else {
             this.disconnect()
         }
+    }
+
+    isConnected () {
+        BluetoothSerial.isConnected()
+        .then((d) => { this.setState(connected: d)})
+        .catch((err) => Toast.showLongBottom(err))
     }
 
     /**

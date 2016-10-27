@@ -11,7 +11,7 @@ import {
     ListView,
     View,
     Picker
-    } from 'react-native';
+} from 'react-native';
 var stories = [];
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 export default class Account extends Component {

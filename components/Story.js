@@ -5,7 +5,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   RecyclerViewBackedScrollView,
-  RefreshControl
+  RefreshControl,
+  ScrollView,
+  ListView,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import Button from "react-native-button";
@@ -69,7 +72,7 @@ export default class Story extends Component {
   }
 
   componentDidMount () {
-    this.getStoryList();
+    setTimeout(this.getStoryList.bind(this), 500);
   }
 
   readFunc (data) {
@@ -78,8 +81,11 @@ export default class Story extends Component {
     }
     if (data.data === 'end\r\n') {
       this.ls = false;
-      this.setState({ storyList: this.storyList })
-      this.setState({ end: true })
+      this.setState({
+        end: true,
+        storyList: this.storyList,
+        refreshing: false
+      })
     }
 
     this.setState({ incommingData: data.data })
@@ -118,34 +124,37 @@ export default class Story extends Component {
     .catch((err) => Toast.showLongBottom(err))
   }
 
-  _onRefresh = () => {
+  _onRefresh() {
+    this.setState({refreshing: true});
     this.getStoryList();
-  };
+  }
 
   render() {
+
+    const rows = this.state.storyList.map((name, i) => {
+      if (name.endsWith('.raw')) {
+        return (
+          <TouchableOpacity
+            key={`${name}_${i}`}
+            style={styles.listItem}
+            onPress={this.play.bind(this, name)}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text>{`<${name}>`}</Text>
+            </View>
+          </TouchableOpacity>
+        )
+      }
+    });
+
       return (
-      <View
-        style={styles.container}
-        renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
-        refreshControl={
-          <RefreshControl
-              refreshing={this.state.isRefreshing}
-              onRefresh={this._onRefresh}
-              tintColor="#ff0000"
-              title="Loading..."
-              titleColor="#00ff00"
-              colors={['#ffffff']}
-              progressBackgroundColor="#8e44ad"
-          />
-        }
-      >
+      <View style={styles.container} >
         <Text style={styles.heading}>{strings.title}</Text>
-        <Button
+        {/* <Button
             containerStyle={styles.buttonStyle7}
             style={styles.textStyle6}
             onPress={this.getStoryList.bind(this)}>
             Список
-        </Button>
+        </Button> */}
         <View>
           <Text>
              incomming data: {this.state.incommingData || 'nothing'} 
@@ -156,7 +165,7 @@ export default class Story extends Component {
              send: {this.state.story} 
           </Text> 
         </View>
-        <View style={styles.listContainer}>
+        {/* <View style={styles.listContainer}>
           {this.state.storyList.map((name, i) => {
             if (name.endsWith('.raw')) {
               return (
@@ -171,7 +180,23 @@ export default class Story extends Component {
               )
             }
           })}
-        </View> 
+        </View> */}
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.isRefreshing}
+              onRefresh={this._onRefresh.bind(this)}
+              dataSource={this.state.storyList}
+              tintColor="#ff0000"
+              title="Loading..."
+              titleColor="#00ff00"
+              colors={['#ff0000', '#00ff00', '#0000ff']}
+              progressBackgroundColor="#ffff00"
+            />
+          }
+        >
+          {rows}
+        </ScrollView>
       </View> 
       )
   }
@@ -180,8 +205,21 @@ export default class Story extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        justifyContent: 'center',
         backgroundColor: '#ffffff',
-        padding: 20
+        paddingBottom: 50
+    },
+    listParent: {
+        flex: 1
+    },
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        padding: 10,
+        backgroundColor: '#F6F6F6'
+    },
+    text: {
+        flex: 1
     },
     heading: {
       fontWeight: 'bold',
