@@ -16,6 +16,7 @@ import NavigationDrawer from './NavigationDrawer'
 import TabIcon from './TabIcon'
 import WiFi from './WiFi'
 import Bluetooth from './Bluetooth'
+import BLE from './BLE'
 import Story from './Story'
 import ClockAlarm from './ClockAlarm'
 import Education from './Education'
@@ -95,7 +96,7 @@ export default class HelloPage extends React.Component {
         </Scene>
         <Scene key="main" type={ActionConst.RESET} initial={this.state.isAuth ? true : false}>
             <Scene key="tabbar" tabs={true}>
-                <Scene key="tab3" component={Bluetooth} title="bluetooth" icon={TabIcon} hideNavBar={true} />                
+                <Scene key="tab3" component={BLE} title="BLE" icon={TabIcon} hideNavBar={true} />                
                 <Scene key="store" component={Store} title="store" icon={TabIcon} hideNavBar={true} />
                 <Scene key="account" component={Account} title="account" icon={TabIcon} hideNavBar={true} />
             </Scene>

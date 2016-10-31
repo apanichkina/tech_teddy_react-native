@@ -305,7 +305,9 @@ export default class Bluetooth extends Component {
                     {this.state.devices.map((device, i) => {
                         if (device.name.startsWith('HC-')) {
                             return (
-                                <TouchableOpacity key={`${device.id}_${i}`} style={styles.listItem} onPress={this.connect.bind(this, device)}>
+                                <TouchableOpacity key={`${device.id}_${i}`}
+                                style={styles.listItem}
+                                onPress={this.connect.bind(this, device)}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                         <Text style={{ fontWeight: 'bold' }}>{device.name}</Text>
                                         <Text>{`<${device.id}>`}</Text>

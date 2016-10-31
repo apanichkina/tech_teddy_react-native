@@ -15,6 +15,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.remobile.toast.RCTToastPackage;
+import it.innove.BleManagerPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,7 +36,8 @@ public class MainApplication extends Application implements ReactApplication {
             new VectorIconsPackage(),
             new FIRMessagingPackage(),
             new RCTToastPackage(),
-            new RCTBluetoothSerialPackage()
+            new RCTBluetoothSerialPackage(),
+            new BleManagerPackage()
       );
     }
   };

@@ -89,7 +89,7 @@ android {
 
     defaultConfig {
         applicationId "com.techteddy"
-        minSdkVersion 16
+        minSdkVersion 18
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -135,6 +135,7 @@ dependencies {
     compile "com.facebook.react:react-native:+"  // From node_modules
     compile project(':react-native-bluetooth-hc05')
     compile project(':react-native-toast')
+    compile project(':react-native-ble-manager')
 }
 
 // Run this once to be able to run the application with BUCK
