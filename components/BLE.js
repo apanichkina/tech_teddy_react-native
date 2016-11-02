@@ -48,10 +48,40 @@ export default class BleExample extends Component {
  
     componentDidMount() {
         BleManager.start({showAlert: false});
+
+
         this.handleDiscoverPeripheral = this.handleDiscoverPeripheral.bind(this);
+        this.handleUpdateState = this.handleUpdateState.bind(this);
+        this.handleDisconnected = this.handleDisconnected.bind(this);
+        this.handleUpdateCharacterisics = this.handleUpdateCharacterisics.bind(this);
  
-        NativeAppEventEmitter
-            .addListener('BleManagerDiscoverPeripheral', this.handleDiscoverPeripheral );
+        NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral', this.handleDiscoverPeripheral );
+        NativeAppEventEmitter.addListener('BleManagerDidUpdateState', this.handleUpdateState );
+        NativeAppEventEmitter.addListener('BleManagerDisconnectPeripheral', this.handleDisconnected );
+        NativeAppEventEmitter.addListener('BleManagerDidUpdateValueForCharacteristic', this.handleUpdateCharacterisics );
+
+    }
+
+    handleUpdateCharacterisics (deviceID, char, value) {
+        Toast.showLongBottom(deviceID);
+        Toast.showLongBottom(char);
+        Toast.showLongBottom(value);
+    }
+
+    handleUpdateState (args) {
+        if (args.state === 'off') {
+            Toast.showLongBottom('BLE is unavailable')
+        } else if (args.state === 'on') {
+            Toast.showLongBottom('BLE is ready')
+        } else {
+            Toast.showLongBottom('handleUpdateState: UNKNOWN')
+        }
+    }
+
+    handleDisconnected (deviceID) {
+        if (deviceID === global.device.id) {
+            Toast.showLongBottom(global.device.name+'disconnected')
+        }
     }
  
     handleScan() {
@@ -66,6 +96,7 @@ export default class BleExample extends Component {
                 this.setState({ device, connected: true, connecting: false })
                 global.device = device;
                 this.write();
+                this.read();
                 // Actions.mishka({ device: device });
           })
           .catch((error) => {
@@ -98,6 +129,20 @@ export default class BleExample extends Component {
             Toast.showLongBottom('error')
         });
     }
+
+    read () {
+        setInterval(()=>{
+            BleManager.read(global.device.id, '0000ffe0-0000-1000-8000-00805f9b34fb', '0000ffe1-0000-1000-8000-00805f9b34fb')
+            .then((readData) => {
+                // Success code 
+                Toast.showLongBottom(readData)
+            })
+            .catch((error) => {
+                // Failure code 
+                console.log(error);
+            });
+        }, 100);
+    }
  
     handleDiscoverPeripheral(data){
         // console.log('Got ble data', data);
@@ -107,8 +152,7 @@ export default class BleExample extends Component {
         if (deviceIds.indexOf(data.id) < 0) {
             devices.push(data)
         }
-        this.setState({ devices, discovering: false })
-        this.setState({ ble: data })
+        this.setState({ ble: data, devices })
     }
  
     render() {
