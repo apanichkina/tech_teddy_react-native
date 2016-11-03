@@ -21,11 +21,13 @@ import BluetoothSerial from 'react-native-bluetooth-hc05'
 import Toast from '@remobile/react-native-toast'
 
 var strings = {
-  title: 'Сказки',
-  disconnected: 'Разрыв соединения'
+  title: 'Настройки',
+  disconnected: 'Разрыв соединения',
+  wifiTitle: 'Wi-Fi',
+  passwordTitle: 'Пароль'
 }
 
-export default class Story extends Component {
+export default class Settings extends Component {
 
   constructor (props) {
     super(props)
@@ -33,51 +35,12 @@ export default class Story extends Component {
       incommingData: '',
       connected: true,
       device: props.device,
-      storyList: [],
-      end: false,
-      isRefreshing: false,
-      story: null
+      wifiPassword: '',
+      wifiSSID: ''
     }
-
-    this.ls = false
-    this.storyList = []
-    this.count = 0
-    this.receivedData = ''
 
     this.handler = this.handlerLost.bind(this)
     this.read = this.readFunc.bind(this)
-  }
-
-  getStoryList () {
-    this.storyList = []
-    BluetoothSerial.clear();
-    this.write('l')
-    this.ls = true
-    this.setState({ incommingData: '' })
-    this.receivedData = ''
-    this.count = 0
-  }
-
-  play (filename) {
-    if (this.state.story) {
-      if (this.state.story === filename) {
-        this.write('p\n');
-      } else {
-        this.write('s'+filename+'\n');
-        this.setState({ story: filename })
-      }
-    } else {
-      this.write('s'+filename+'\n');
-      this.setState({ story: filename })
-    }
-  }
-
-  downloadFile (filename) {
-    this.write('y'+filename+'\n');
-  }
-
-  removeFile (filename) {
-    this.write('r'+filename+'\n');
   }
 
   componentWillMount () {
@@ -87,7 +50,12 @@ export default class Story extends Component {
   }
 
   componentDidMount () {
-    setTimeout(this.getStoryList.bind(this), 500);
+    // setTimeout(this.getStoryList.bind(this), 500);
+  }
+
+  setWifi () {
+    Toast.showLongBottom(this.state.wifiPassword + ' ' + this.state.wifiSSID)
+    this.write('c'+this.state.wifiSSID+'\n'+this.state.wifiPassword+'\n');
   }
 
   readFunc (data) {
@@ -112,12 +80,9 @@ export default class Story extends Component {
   }
 
   handlerLost () {
-    /* if (this.state.device) {
-      Toast.showLongBottom(`STORY: Connection to device ${this.state.device.name} has been lost`)
-    } */
     Toast.showLongBottom(strings.disconnected)
     this.setState({ connected: false })
-    //Actions.pop();
+    Actions.pop();
   }
 
   componentWillUnmount () {
@@ -127,101 +92,59 @@ export default class Story extends Component {
   }
 
   unsubscribe () {
-    BluetoothSerial.unsubscribe()
-    .then((res) => {})
-    .catch((err) => {})
+    BluetoothSerial.unsubscribe().then((res) => {}).catch((err) => {})
   }
 
   subscribe () {
-    BluetoothSerial.subscribe('\n')
-    .then((res) => {})
-    .catch((err) => {})
+    BluetoothSerial.subscribe('\n').then((res) => {}).catch((err) => {})
   }
 
   write (message) {
-    BluetoothSerial.write(message)
-    .then((res) => {})
-    .catch((err) => Toast.showLongBottom(err))
-  }
-
-  settingsPress() {
-    Actions.settings();
+    BluetoothSerial.write(message).then((res) => {}).catch((err) => Toast.showLongBottom(err))
   }
 
   _onRefresh() {
     this.setState({refreshing: true});
-    this.getStoryList();
   }
 
   render() {
 
-    const rows = this.state.storyList.map((name, i) => {
-      if (name.endsWith('.raw')) {
-        return (
-          <TouchableOpacity
-            key={`${name}_${i}`}
-            style={styles.listItem}
-            onPress={this.play.bind(this, name)}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <Text>{`<${name}>`}</Text>
-            </View>
-          </TouchableOpacity>
-        )
-      }
-    });
-
       return (
       <View style={styles.container} >
-          <Text style={styles.heading}>{strings.title}</Text>
-          <Button onPress={() => this.settingsPress()}>Settings</Button>
-        {/* <Button
-            containerStyle={styles.buttonStyle7}
-            style={styles.textStyle6}
-            onPress={this.getStoryList.bind(this)}>
-            Список
-        </Button> */}
+        <Text
+          style={styles.heading}>
+          {strings.title}
+        </Text>
         <View>
           <Text>
              incomming data: {this.state.incommingData || 'nothing'} 
           </Text>
-        </View>
-        <View>
           <Text>
              send: {this.state.story} 
           </Text> 
         </View>
-        {/* <View style={styles.listContainer}>
-          {this.state.storyList.map((name, i) => {
-            if (name.endsWith('.raw')) {
-              return (
-                <TouchableOpacity
-                  key={`${name}_${i}`}
-                  style={styles.listItem}
-                  onPress={this.play.bind(this, name)}>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text>{`<${name}>`}</Text>
-                  </View>
-                </TouchableOpacity>
-              )
-            }
-          })}
-        </View> */}
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.isRefreshing}
-              onRefresh={this._onRefresh.bind(this)}
-              dataSource={this.state.storyList}
-              tintColor="#ff0000"
-              title="Loading..."
-              titleColor="#00ff00"
-              colors={['#ff0000', '#00ff00', '#0000ff']}
-              progressBackgroundColor="#ffff00"
-            />
-          }
-        >
-          {rows}
-        </ScrollView>
+        <View>
+          <Text
+            style={styles.heading}>
+            {strings.wifiTitle} 
+          </Text>
+          <TextInput
+            placeholder='имя домашней сети'
+            value={this.state.wifiSSID}
+            onChangeText={(text) => { this.setState({wifiSSID: text}) }}>
+          </TextInput>
+          <TextInput
+            placeholder='пароль'
+            secureTextEntry={true}
+            value={this.state.wifiPassword}
+            onChangeText={(text) => { this.setState({wifiPassword: text}) }}>
+          </TextInput>
+          <Button
+            style={{alignSelf: 'flex-end'}}
+            onPress={this.setWifi.bind(this)}>
+            Применить
+          </Button>
+        </View>
       </View> 
       )
   }

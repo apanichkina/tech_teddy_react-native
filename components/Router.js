@@ -19,6 +19,7 @@ import Bluetooth from './Bluetooth'
 import Story from './Story'
 import ClockAlarm from './ClockAlarm'
 import Education from './Education'
+import Settings from './Settings'
 
 import Store from './StoryStore'
 import Account from './Account'
@@ -102,7 +103,7 @@ export default class HelloPage extends React.Component {
         </Scene>
         <Scene key="page" component={Page} title="stortty" hideNavBar={true} />
         </Scene>
-
+        <Scene key="settings"  component={Settings}  title="Настройки" />
         </Router>;
     }
 
