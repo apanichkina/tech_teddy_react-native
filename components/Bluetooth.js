@@ -61,7 +61,7 @@ export default class Bluetooth extends Component {
       Toast.showLongBottom(`BLUETOOTH: Connection to device ${this.state.device.name} has been lost`)
       } */
       if (!this.expectDisconnect) {
-        Toast.showLongBottom(`BLUETOOTH: Connection has been lost`)
+        // Toast.showLongBottom(`BLUETOOTH: lost`)
       } else {
         this.expectDisconnect = false;
       }
@@ -180,7 +180,7 @@ export default class Bluetooth extends Component {
         this.setState({ connecting: true })
         BluetoothSerial.connect(device.id)
             .then((res) => {
-                Toast.showLongBottom(`Connected to device ${device.name}`)
+                Toast.showLongBottom(`Connected ${device.name}`)
 
                 //this.subscribe();
 

@@ -30,10 +30,37 @@ import Toast from '@remobile/react-native-toast'
 
 const Realm = require('realm');
 const realm = new Realm({
-    schema: [{name: 'Token', primaryKey: 'name', properties: {name: 'string', token : 'string'}}]
+    schema: [{
+        name: 'Token',
+        primaryKey: 'name',
+        properties: {
+            name: 'string',
+            token : 'string'
+        }
+    }]
+});
+
+const device = new Realm({
+    schema: [{
+        name: 'Device',
+        primaryKey: 'name',
+        properties: {
+            name: 'string',
+            id: 'string',
+            token : 'string'
+        }
+    }]
 });
 
 global.device = false;
+global.alarm = {
+    days: [false, false, false, false, false, false, false],
+    active: false,
+    time: new Date(),
+    lightActive: false,
+    vibroActive: false,
+    soundActive: false
+}
 
 const strings = {
   title: 'Сказки',
@@ -73,10 +100,7 @@ export default class HelloPage extends React.Component {
     }
 
     handlerLost () {
-        /* if (this.state.device) {
-          Toast.showLongBottom(`STORY: Connection to device ${this.state.device.name} has been lost`)
-        } */
-        Toast.showLongBottom('ROUTER: '+strings.disconnected)
+        // Toast.showLongBottom('ROUTER: '+strings.disconnected)
         this.setState({ connected: false })
         global.device = false;
         // Actions.pop();

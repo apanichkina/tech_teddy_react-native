@@ -122,6 +122,7 @@ export default class Story extends Component {
 
   componentWillUnmount () {
     this.unsubscribe()
+    Toast.showLongBottom('STORY: unsubscribe')
     BluetoothSerial.off('connectionLost', this.handler)
     BluetoothSerial.off('data', this.read);
   }
@@ -172,8 +173,10 @@ export default class Story extends Component {
 
       return (
       <View style={styles.container} >
+        <View style={styles.inline}>
           <Text style={styles.heading}>{strings.title}</Text>
-          <Button onPress={() => this.settingsPress()}>Settings</Button>
+          <Button onPress={() => this.settingsPress()}>Wi-Fi</Button>
+        </View>
         {/* <Button
             containerStyle={styles.buttonStyle7}
             style={styles.textStyle6}
@@ -230,9 +233,15 @@ export default class Story extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
         backgroundColor: '#ffffff',
         paddingBottom: 50
+    },
+    inline: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        height: 40,
+        paddingHorizontal: 25,
+        alignItems: 'center'
     },
     listParent: {
         flex: 1

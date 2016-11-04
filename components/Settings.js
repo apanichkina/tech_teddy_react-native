@@ -9,6 +9,7 @@ import {
   RefreshControl,
   ScrollView,
   ListView,
+  Switch,
   TouchableWithoutFeedback,
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
@@ -23,9 +24,14 @@ import Toast from '@remobile/react-native-toast'
 var strings = {
   title: 'Настройки',
   disconnected: 'Разрыв соединения',
-  wifiTitle: 'Wi-Fi',
-  passwordTitle: 'Пароль'
+  wifiTitle: 'задать Wi-Fi',
+  passwordTitle: 'Пароль',
+  wifiNamePlaceholder: 'имя сети Wi-Fi',
+  checkWifi: 'проверить соединение'
 }
+
+// 56762426
+
 
 export default class Settings extends Component {
 
@@ -36,7 +42,8 @@ export default class Settings extends Component {
       connected: true,
       device: props.device,
       wifiPassword: '',
-      wifiSSID: ''
+      wifiSSID: '',
+      wifiIsActive: false
     }
 
     this.handler = this.handlerLost.bind(this)
@@ -46,7 +53,7 @@ export default class Settings extends Component {
   componentWillMount () {
     BluetoothSerial.on('connectionLost', this.handler)
     BluetoothSerial.on('data', this.read);
-    this.subscribe('\n');
+    BluetoothSerial.subscribe('\n').then((res) => {}).catch((err) => {})
   }
 
   componentDidMount () {
@@ -56,6 +63,11 @@ export default class Settings extends Component {
   setWifi () {
     Toast.showLongBottom(this.state.wifiPassword + ' ' + this.state.wifiSSID)
     this.write('c'+this.state.wifiSSID+'\n'+this.state.wifiPassword+'\n');
+  }
+
+  toggleWifi () {
+    this.write('w');
+    this.setState({ wifiIsActive: !this.state.wifiIsActive })
   }
 
   readFunc (data) {
@@ -73,10 +85,12 @@ export default class Settings extends Component {
         storyList: this.storyList,
         refreshing: false
       })
+      Toast.showLongBottom('Settings end')
       // this.setState({ incommingData: this.count+': '+this.receivedData })
     }
 
     this.setState({ incommingData: data.data })
+
   }
 
   handlerLost () {
@@ -86,50 +100,41 @@ export default class Settings extends Component {
   }
 
   componentWillUnmount () {
-    this.unsubscribe()
+    BluetoothSerial.unsubscribe().then((res) => {}).catch((err) => {})
+    Toast.showLongBottom('SETTINGS unsubscribe')
     BluetoothSerial.off('connectionLost', this.handler)
     BluetoothSerial.off('data', this.read);
-  }
-
-  unsubscribe () {
-    BluetoothSerial.unsubscribe().then((res) => {}).catch((err) => {})
-  }
-
-  subscribe () {
-    BluetoothSerial.subscribe('\n').then((res) => {}).catch((err) => {})
   }
 
   write (message) {
     BluetoothSerial.write(message).then((res) => {}).catch((err) => Toast.showLongBottom(err))
   }
 
-  _onRefresh() {
-    this.setState({refreshing: true});
-  }
-
   render() {
 
       return (
       <View style={styles.container} >
-        <Text
-          style={styles.heading}>
-          {strings.title}
-        </Text>
         <View>
-          <Text>
+          <Text style={{backgroundColor: '#ff0000'}}>
              incomming data: {this.state.incommingData || 'nothing'} 
           </Text>
-          <Text>
+          <Text style={{backgroundColor: '#ff0000'}}>
              send: {this.state.story} 
           </Text> 
         </View>
         <View>
+          <View style={styles.inline} >
+            <Text
+              style={styles.h1}>
+              {strings.title}
+            </Text>
+          </View>
           <Text
-            style={styles.heading}>
+            style={styles.h2}>
             {strings.wifiTitle} 
           </Text>
           <TextInput
-            placeholder='имя домашней сети'
+            placeholder={strings.wifiNamePlaceholder}
             value={this.state.wifiSSID}
             onChangeText={(text) => { this.setState({wifiSSID: text}) }}>
           </TextInput>
@@ -144,6 +149,12 @@ export default class Settings extends Component {
             onPress={this.setWifi.bind(this)}>
             Применить
           </Button>
+          <View style={styles.enableInfoWrapper}>
+            <Text style={{ fontWeight: 'bold' }}>{strings.checkWifi}</Text>
+            <Switch
+              onValueChange={this.toggleWifi.bind(this)}
+              value={this.state.wifiIsActive} />
+          </View>
         </View>
       </View> 
       )
@@ -153,75 +164,34 @@ export default class Settings extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
         backgroundColor: '#ffffff',
-        paddingBottom: 50
+        paddingBottom: 50,
+        marginTop: 0
     },
-    listParent: {
-        flex: 1
-    },
-    row: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        padding: 10,
-        backgroundColor: '#F6F6F6'
-    },
-    text: {
-        flex: 1
-    },
-    heading: {
+    h1: {
       fontWeight: 'bold',
       fontSize: 24,
       marginVertical: 10,
       alignSelf: 'center'
     },
-    containerIcon: {
-        justifyContent: 'center',
-        alignItems: 'center'
+    h2: {
+      fontWeight: 'bold',
+      fontSize: 20,
+      marginVertical: 5,
+      alignSelf: 'flex-start'
     },
-    icon: {
-        tintColor: '#8e44ad',
-        width: 120,
-        height: 170
-
+    inline: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      height: 40,
+      paddingHorizontal: 25,
+      alignItems: 'center'
     },
-    listContainer: {
-      marginTop: 5,
-      borderColor: '#ccc',
-      borderTopWidth: 0.5
+    enableInfoWrapper: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      height: 40,
+      paddingHorizontal: 25,
+      alignItems: 'center'
     },
-    listItem: {
-      flex: 1,
-      padding: 25,
-      borderColor: '#ccc',
-      borderBottomWidth: 0.5
-    },
-    textStyle: {
-        color: 'white',
-        textAlign: 'center'
-    },
-    textStyle6: {
-        color: '#8e44ad',
-        textAlign: 'center'
-    },
-    buttonStylePressing: {
-        borderColor: 'red',
-        backgroundColor: 'red'
-    },
-    buttonStyle6: {
-        borderColor: '#8e44ad',
-        backgroundColor: '#8e44ad',
-        borderRadius: 3,
-        borderWidth: 3,
-        padding: 10
-    },
-    buttonStyle7: {
-        borderColor: '#8e44ad',
-        backgroundColor: '#ffffff',
-        borderRadius: 3,
-        borderWidth: 3,
-        padding: 10,
-        marginVertical: 15
-    }
-
 });
