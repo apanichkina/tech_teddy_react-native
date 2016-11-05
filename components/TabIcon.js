@@ -18,7 +18,7 @@ const TabIcon = (props) => (
         {props.title == 'clockalarm' &&
         <Image
             style={{ width: 35,height: 35, tintColor: props.selected ? '#8e44ad' : '#9E9E9E' }}
-            source={require('../img/ic_alarm_white_24dp.png')}
+            source={require('../img/brightness_3_white_24dp.png')}
             />
         }
         {props.title == 'story' &&
@@ -48,7 +48,7 @@ const TabIcon = (props) => (
         {props.title == 'education' &&
         <Image
             style={{ width: 35,height: 35, tintColor: props.selected ? '#8e44ad' : '#9E9E9E' }}
-            source={require('../img/play_arrow_white_24dp.png')}
+            source={require('../img/language_white_24dp.png')}
             />
         }
         {props.title == 'account' &&

@@ -61,16 +61,19 @@ export default class ClockAlarm extends Component {
   toggleLight () {
     global.alarm.lightActive = !this.state.lightActive
     this.setState({ lightActive: global.alarm.lightActive })
+    this.sendTimeToDevice()
   }
 
   toggleVibro () {
     global.alarm.vibroActive = !this.state.vibroActive
     this.setState({ vibroActive: global.alarm.vibroActive })
+    this.sendTimeToDevice()
   }
 
   toggleSound () {
     global.alarm.soundActive = !this.state.soundActive
     this.setState({ soundActive: global.alarm.soundActive })
+    this.sendTimeToDevice()
   }
 
   getAlarmTime () {
@@ -105,15 +108,15 @@ export default class ClockAlarm extends Component {
     var d = data.data
     var days = d.charCodeAt(3)
     var active = d.charCodeAt(4)
-    // Toast.showShortBottom(d.charCodeAt(1) + ' ' + d.charCodeAt(2) + ' ' + d.charCodeAt(3))
+    // Toast.showShortBottom(d.charCodeAt(1) + ' ' + d.charCodeAt(2) + ' ' + d.charCodeAt(3) + ' ' + d.charCodeAt(4))
     for (var i = 0; i < 7; ++i) {
-      global.alarm.days[i] = (days >> i) & 0xFF
+      global.alarm.days[i] = (days >> i) & 0x01
     }
 
-    global.alarm.lightActive = (active >> 0) & 0xFF
-    global.alarm.vibroActive = (active >> 1) & 0xFF
-    global.alarm.soundActive = (active >> 2) & 0xFF
-    global.alarm.active = (active >> 3) & 0xFF
+    global.alarm.lightActive = !!((active >> 0) & 0x01)
+    global.alarm.vibroActive = !!((active >> 1) & 0x01)
+    global.alarm.soundActive = !!((active >> 2) & 0x01)
+    global.alarm.active = !!((active >> 3) & 0x01)
 
     global.alarm.time.setHours(d.charCodeAt(1), d.charCodeAt(2))
 
@@ -162,9 +165,6 @@ export default class ClockAlarm extends Component {
   }
 
   write (data) {
-
-    Toast.showShortBottom(data.charCodeAt(1) + ' ' + data.charCodeAt(2) + ' ' + data.charCodeAt(3) + ' ' + data.charCodeAt(4))
-
     BluetoothSerial.write(data)
     .then((res) => {})
     .catch((err) => Toast.showLongBottom(err))
@@ -212,6 +212,7 @@ export default class ClockAlarm extends Component {
           {this.state.days.map((day, i) => {
               return (
                 <Text
+                  key={i}
                   onPress={this._changeWeekDay.bind(this, i)}
                   style={[styles.days, (day) ? styles.active : styles.inactive]}>
                     {strings.days[i]}
