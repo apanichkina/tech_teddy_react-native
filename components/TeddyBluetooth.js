@@ -344,6 +344,32 @@ class BlueManager {
 
     }
 
+    setWiFi (ssid, password, timeout = 2000) {
+        var process = this.talkToBear(
+            'wifi\r\n',
+            '\r\n',
+            (endmsg, delimeter, resolve, reject, data)=> {
+                var datastr = data.data.toString().replace(endmsg, '');
+                datastr = datastr.slice(0,-2)
+                resolve(datastr);
+            },
+            'c'+ssid+'\n'+password+'\n');
+        return process(timeout)
+    }
+
+    toggleWiFi (timeout = 2000) {
+        var process = this.talkToBear(
+            'wifi\r\n',
+            '\r\n',
+            (endmsg, delimeter, resolve, reject, data)=> {
+                var datastr = data.data.toString().replace(endmsg, '');
+                datastr = datastr.slice(0,-2)
+                resolve(datastr);
+            },
+            'w\n');
+        return process(timeout)
+    }
+
 }
 
 export default Singleton = (function () {

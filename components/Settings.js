@@ -18,8 +18,9 @@ import {
     Buffer
 } from 'buffer'
 
-import BluetoothSerial from 'react-native-bluetooth-hc05'
-import Toast from '@remobile/react-native-toast'
+import TeddyBluetooth from './TeddyBluetooth'
+import ToastError from './ToastError'
+var E = new ToastError('ClockAlarm')
 
 var strings = {
   title: 'Настройки',
@@ -32,96 +33,44 @@ var strings = {
 
 // 56762426
 
-
 export default class Settings extends Component {
 
   constructor (props) {
     super(props)
     this.state = {
-      incommingData: '',
-      connected: true,
-      device: props.device,
       wifiPassword: '',
       wifiSSID: '',
       wifiIsActive: false
     }
-
-    this.handler = this.handlerLost.bind(this)
-    this.read = this.readFunc.bind(this)
   }
 
-  componentWillMount () {
-    BluetoothSerial.on('connectionLost', this.handler)
-    BluetoothSerial.on('data', this.read);
-    BluetoothSerial.subscribe('\n').then((res) => {}).catch((err) => {})
+  componentWillMount () { }
+
+  componentDidMount () { }
+
+  setWiFi () {
+    BL.setWiFi(this.state.wifiSSID, this.state.wifiPassword)
+      .then((res) => { E.long(res, 'setWiFi') })
+      .catch((error) => { E.long(error, 'setWiFi') });
   }
 
-  componentDidMount () {
-    // setTimeout(this.getStoryList.bind(this), 500);
-  }
-
-  setWifi () {
-    Toast.showLongBottom(this.state.wifiPassword + ' ' + this.state.wifiSSID)
-    this.write('c'+this.state.wifiSSID+'\n'+this.state.wifiPassword+'\n');
-  }
-
-  toggleWifi () {
-    this.write('w');
-    this.setState({ wifiIsActive: !this.state.wifiIsActive })
-  }
-
-  readFunc (data) {
-
-    if (this.ls) {
-      this.storyList.push(data.data.slice(0,-2))
-      this.count++
-      this.receivedData += data.data
-    }
-
-    if (data.data === 'end\r\n') {
-      this.ls = false;
-      this.setState({
-        end: true,
-        storyList: this.storyList,
-        refreshing: false
+  toggleWiFi () {
+    BL.toggleWiFi()
+      .then((res) => {
+        this.setState({ wifiIsActive: (res == 'on') ? true : false })
+        E.long(res, 'toggleWiFi')
       })
-      Toast.showLongBottom('Settings end')
-      // this.setState({ incommingData: this.count+': '+this.receivedData })
-    }
-
-    this.setState({ incommingData: data.data })
-
+      .catch((error) => {
+        E.long(error, 'toggleWiFi')
+      });
   }
 
-  handlerLost () {
-    Toast.showLongBottom(strings.disconnected)
-    this.setState({ connected: false })
-    Actions.pop();
-  }
-
-  componentWillUnmount () {
-    BluetoothSerial.unsubscribe().then((res) => {}).catch((err) => {})
-    Toast.showLongBottom('SETTINGS unsubscribe')
-    BluetoothSerial.off('connectionLost', this.handler)
-    BluetoothSerial.off('data', this.read);
-  }
-
-  write (message) {
-    BluetoothSerial.write(message).then((res) => {}).catch((err) => Toast.showLongBottom(err))
-  }
+  componentWillUnmount () { }
 
   render() {
 
       return (
       <View style={styles.container} >
-        <View>
-          <Text style={{backgroundColor: '#ff0000'}}>
-             incomming data: {this.state.incommingData || 'nothing'} 
-          </Text>
-          <Text style={{backgroundColor: '#ff0000'}}>
-             send: {this.state.story} 
-          </Text> 
-        </View>
         <View>
           <View style={styles.inline} >
             <Text
@@ -146,13 +95,13 @@ export default class Settings extends Component {
           </TextInput>
           <Button
             style={{alignSelf: 'flex-end'}}
-            onPress={this.setWifi.bind(this)}>
+            onPress={this.setWiFi.bind(this)}>
             Применить
           </Button>
           <View style={styles.enableInfoWrapper}>
             <Text style={{ fontWeight: 'bold' }}>{strings.checkWifi}</Text>
             <Switch
-              onValueChange={this.toggleWifi.bind(this)}
+              onValueChange={this.toggleWiFi.bind(this)}
               value={this.state.wifiIsActive} />
           </View>
         </View>
