@@ -15,8 +15,12 @@ import {
     Actions
     } from 'react-native-router-flux';
 
-import Toast from '@remobile/react-native-toast'
 import BluetoothSerial from 'react-native-bluetooth-hc05'
+import TeddyBluetooth from './TeddyBluetooth'
+
+import ToastError from './ToastError'
+var E = new ToastError('Bluetooth')
+
 import {
     Buffer
     } from 'buffer'
@@ -54,12 +58,11 @@ export default class Bluetooth extends Component {
         this.expectDisconnect = false;
 
         this.handler = this.handlerLost.bind(this)
+
+        BL = TeddyBluetooth.getInstance();
     }
 
     handlerLost () {
-      /* if (this.state.device) {
-      Toast.showLongBottom(`BLUETOOTH: Connection to device ${this.state.device.name} has been lost`)
-      } */
       if (!this.expectDisconnect) {
         // Toast.showLongBottom(`BLUETOOTH: lost`)
       } else {
@@ -85,7 +88,7 @@ export default class Bluetooth extends Component {
         }
 
         BluetoothSerial.on('bluetoothEnabled', () => {
-            Toast.showLongBottom('Bluetooth enabled')
+            E.short('enabled')
             Promise.all([
                 BluetoothSerial.isEnabled(),
                 BluetoothSerial.list()
@@ -96,7 +99,7 @@ export default class Bluetooth extends Component {
                 })
         })
 
-        BluetoothSerial.on('bluetoothDisabled', () => Toast.showLongBottom('Bluetooth disabled'))
+        BluetoothSerial.on('bluetoothDisabled', () => E.short('disabled'))
 
         BluetoothSerial.on('connectionLost', this.handler)
 
@@ -121,16 +124,16 @@ export default class Bluetooth extends Component {
     }
 
     enable () {
-        BluetoothSerial.enable()
-            .then((res) => this.setState({ isEnabled: true }))
-            .catch((err) => Toast.showLongBottom(err))
+      BL.enable()
+      .then((res) => this.setState({ isEnabled: true }))
+      .catch((err) => E.short(err))
     }
 
     disable () {
-        this.expectDisconnect = true;
-        BluetoothSerial.disable()
-            .then((res) => this.setState({ isEnabled: false }))
-            .catch((err) => Toast.showLongBottom(err))
+      this.expectDisconnect = true;
+      BL.disable()
+        .then((res) => this.setState({ isEnabled: false }))
+        .catch((err) => E.short(err))
     }
 
     toggleBluetooth (value) {
@@ -146,7 +149,7 @@ export default class Bluetooth extends Component {
             return false
         } else {
             this.setState({ discovering: true })
-            BluetoothSerial.discoverUnpairedDevices()
+            BL.discoverUnpairedDevices()
                 .then((unpairedDevices) => {
                     const devices = this.state.devices
                     const deviceIds = devices.map((d) => d.id)
@@ -160,58 +163,32 @@ export default class Bluetooth extends Component {
         }
     }
 
-    subscribe () {
-        BluetoothSerial.subscribe('\n')
-            .then((res) => {})
-            .catch((err) => {})
-    }
-
-    unsubscribe () {
-        BluetoothSerial.unsubscribe()
-            .then((res) => {})
-            .catch((err) => {})
-    }
-
-    /**
-     * Connect to bluetooth device by id
-     * @param  {Object} device
-     */
     connect (device) {
-        this.setState({ connecting: true })
-        BluetoothSerial.connect(device.id)
-            .then((res) => {
-                Toast.showLongBottom(`Connected ${device.name}`)
-
-                //this.subscribe();
-
-                /* devicesToShow = devicesToShow.filter(function(item) {
-                 return item.id !== device.id;
-                 }); */
-                this.setState({ device, connected: true, connecting: false })
-                global.device = device;
-                Actions.mishka({ device: device });
-            })
-            .catch((err) => {
-                this.setState({ connected: false, connecting: false })
-            })
+      this.setState({ connecting: true })
+      BL.connect(device.id)
+        .then((res) => {
+          // E.short(`Connected ${device.name}`)
+          this.setState({ device, connected: true, connecting: false })
+          global.device = device;
+          Actions.mishka({ device: device });
+        })
+        .catch((err) => {
+          this.setState({ connected: false, connecting: false })
+        })
     }
 
-    /**
-     * Disconnect from bluetooth device
-     */
     disconnect () {
-      BluetoothSerial.disconnect()
-          .then(() => {
-              // this.setState({ connected: false })
-              // this.unsubscribe();
-          })
-          .catch((err) => Toast.showLongBottom(err))
+      this.expectDisconnect = true;
+      BL.disconnect()
+      .then(() => {
+        this.expectDisconnect = false;
+      })
+      .catch((err) => {
+        this.expectDisconnect = false;
+        E.short(err)
+      })
     }
 
-    /**
-     * Toggle connection when we have active device
-     * @param  {Boolean} value
-     */
     toggleConnect (value) {
         if (value === true && this.state.device) {
             this.connect(this.state.device)
@@ -221,43 +198,9 @@ export default class Bluetooth extends Component {
     }
 
     isConnected () {
-        BluetoothSerial.isConnected()
-        .then((d) => { this.setState(connected: d)})
-        .catch((err) => Toast.showLongBottom(err))
-    }
-
-    /**
-     * Write message to device
-     * @param  {String} message
-     */
-    write (message) {
-        if (!this.state.connected) {
-            Toast.showLongBottom('You must connect to device first')
-            return
-        }
-
-        BluetoothSerial.write(message)
-            .then((res) => {
-                this.setState({ connected: true })
-            })
-            .catch((err) => Toast.showLongBottom(err))
-    }
-
-    writePackets (message, packetSize = 64) {
-        const toWrite = iconv.encode(message, 'cp852')
-        const writePromises = []
-        const packetCount = Math.ceil(toWrite.length / packetSize)
-
-        for (var i = 0; i < packetCount; i++) {
-            const packet = new Buffer(packetSize)
-            packet.fill(' ')
-            toWrite.copy(packet, 0, i * packetSize, (i + 1) * packetSize)
-            writePromises.push(BluetoothSerial.write(packet))
-        }
-
-        Promise.all(writePromises)
-            .then((result) => {
-            })
+      BL.isConnected()
+      .then((d) => { this.setState(connected: d)})
+      .catch((err) => E.short(err))
     }
 
     render () {

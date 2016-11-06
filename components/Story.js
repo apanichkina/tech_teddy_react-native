@@ -17,8 +17,12 @@ import {
     Buffer
 } from 'buffer'
 
-import BluetoothSerial from 'react-native-bluetooth-hc05'
-import Toast from '@remobile/react-native-toast'
+// import BluetoothSerial from 'react-native-bluetooth-hc05'
+
+import TeddyBluetooth from './TeddyBluetooth'
+
+import ToastError from './ToastError'
+var E = new ToastError('Story')
 
 var strings = {
   title: 'Сказки',
@@ -34,123 +38,81 @@ export default class Story extends Component {
       connected: true,
       device: props.device,
       storyList: [],
-      end: false,
-      isRefreshing: false,
+      refreshing: true,
       story: null
     }
-
-    this.ls = false
-    this.storyList = []
-    this.count = 0
-    this.receivedData = ''
-
-    this.handler = this.handlerLost.bind(this)
-    this.read = this.readFunc.bind(this)
   }
 
   getStoryList () {
-    this.storyList = []
-    BluetoothSerial.clear();
-    this.write('l')
-    this.ls = true
-    this.setState({ incommingData: '' })
-    this.receivedData = ''
-    this.count = 0
+    this.setState({refreshing: true});
+    BL.getStoryList()
+      .then((result) => {
+        this.setState({
+          storyList: result,
+          refreshing: false
+        })
+      })
+      .catch((error) => {
+        E.short(error, 'getStoryList')
+        this.setState({
+          refreshing: false
+        })
+      });
   }
 
   play (filename) {
-    if (this.state.story) {
-      if (this.state.story === filename) {
-        this.write('p\n');
+    var playNewStory = false
+    if (BL.story) {
+      if (BL.story === filename) {
+        BL.pause_unpause()
+        .then((res) => { this.setState({ incommingData: res }) })
+        .catch((error) => { E.long(error, 'pause_unpause') });
       } else {
-        this.write('s'+filename+'\n');
-        this.setState({ story: filename })
+        playNewStory = true
       }
     } else {
-      this.write('s'+filename+'\n');
-      this.setState({ story: filename })
+      playNewStory = true
+    }
+
+    if (playNewStory) {
+      BL.play(filename)
+      .then((res) => {
+        this.setState({ incommingData: res })
+        BL.story = filename
+      })
+      .catch((error) => { E.long(error, 'play') });
+      // this.setState({ story: filename })
     }
   }
 
   downloadFile (filename) {
-    this.write('y'+filename+'\n');
+    BL.downloadFile(filename)
+      .then((res) => { this.setState({ incommingData: res }) })
+      .catch((error) => { E.long(error, 'downloadFile') });
   }
 
   removeFile (filename) {
-    this.write('r'+filename+'\n');
+    BL.removeFile(filename)
+      .then((res) => {
+        this.setState({ incommingData: res })
+        this.getStoryList()
+      })
+      .catch((error) => { E.long(error, 'removeFile') });
   }
 
-  componentWillMount () {
-    BluetoothSerial.on('connectionLost', this.handler)
-    BluetoothSerial.on('data', this.read);
-    this.subscribe('\n');
-  }
+  componentWillMount () {}
 
   componentDidMount () {
     setTimeout(this.getStoryList.bind(this), 500);
   }
 
-  readFunc (data) {
-
-    if (this.ls) {
-      this.storyList.push(data.data.slice(0,-2))
-      this.count++
-      this.receivedData += data.data
-    }
-
-    if (data.data === 'end\r\n') {
-      this.ls = false;
-      this.setState({
-        end: true,
-        storyList: this.storyList,
-        refreshing: false
-      })
-      // this.setState({ incommingData: this.count+': '+this.receivedData })
-    }
-
-    this.setState({ incommingData: data.data })
-  }
-
-  handlerLost () {
-    /* if (this.state.device) {
-      Toast.showLongBottom(`STORY: Connection to device ${this.state.device.name} has been lost`)
-    } */
-    Toast.showLongBottom(strings.disconnected)
-    this.setState({ connected: false })
-    //Actions.pop();
-  }
-
-  componentWillUnmount () {
-    this.unsubscribe()
-    Toast.showLongBottom('STORY: unsubscribe')
-    BluetoothSerial.off('connectionLost', this.handler)
-    BluetoothSerial.off('data', this.read);
-  }
-
-  unsubscribe () {
-    BluetoothSerial.unsubscribe()
-    .then((res) => {})
-    .catch((err) => {})
-  }
-
-  subscribe () {
-    BluetoothSerial.subscribe('\n')
-    .then((res) => {})
-    .catch((err) => {})
-  }
-
-  write (message) {
-    BluetoothSerial.write(message)
-    .then((res) => {})
-    .catch((err) => Toast.showLongBottom(err))
-  }
+  componentWillUnmount () {}
 
   settingsPress() {
     Actions.settings();
   }
 
   _onRefresh() {
-    this.setState({refreshing: true});
     this.getStoryList();
   }
 
@@ -159,31 +121,31 @@ export default class Story extends Component {
     const rows = this.state.storyList.map((name, i) => {
       if (name.endsWith('.raw')) {
         return (
-          <TouchableOpacity
+          <View
             key={`${name}_${i}`}
-            style={styles.listItem}
-            onPress={this.play.bind(this, name)}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <Text>{`<${name}>`}</Text>
-            </View>
-          </TouchableOpacity>
+            style={styles.listItem} >
+            <TouchableOpacity
+              style={{width: 100}}              
+              onPress={this.play.bind(this, name)}>
+                <Text>{`${name}`}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{width: 30, alignSelf: 'flex-end'}}              
+              onPress={this.removeFile.bind(this, name)}>
+              <Text>DEL</Text>
+            </TouchableOpacity>
+          </View>
         )
       }
     });
 
-      return (
+    return (
       <View style={styles.container} >
         <View style={styles.inline}>
           <Text style={styles.heading}>{strings.title}</Text>
           <Button onPress={() => this.settingsPress()}>Wi-Fi</Button>
         </View>
-        {/* <Button
-            containerStyle={styles.buttonStyle7}
-            style={styles.textStyle6}
-            onPress={this.getStoryList.bind(this)}>
-            Список
-        </Button> */}
-        <View>
+        {/* <View>
           <Text>
              incomming data: {this.state.incommingData || 'nothing'} 
           </Text>
@@ -192,28 +154,12 @@ export default class Story extends Component {
           <Text>
              send: {this.state.story} 
           </Text> 
-        </View>
-        {/* <View style={styles.listContainer}>
-          {this.state.storyList.map((name, i) => {
-            if (name.endsWith('.raw')) {
-              return (
-                <TouchableOpacity
-                  key={`${name}_${i}`}
-                  style={styles.listItem}
-                  onPress={this.play.bind(this, name)}>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text>{`<${name}>`}</Text>
-                  </View>
-                </TouchableOpacity>
-              )
-            }
-          })}
         </View> */}
         <ScrollView
           refreshControl={
             <RefreshControl
-              refreshing={this.state.isRefreshing}
-              onRefresh={this._onRefresh.bind(this)}
+              refreshing={this.state.refreshing}
+              onRefresh={this.getStoryList.bind(this)}
               dataSource={this.state.storyList}
               tintColor="#ff0000"
               title="Loading..."
@@ -221,12 +167,11 @@ export default class Story extends Component {
               colors={['#ff0000', '#00ff00', '#0000ff']}
               progressBackgroundColor="#ffff00"
             />
-          }
-        >
+          }>
           {rows}
         </ScrollView>
       </View> 
-      )
+    )
   }
 }
 
@@ -278,6 +223,7 @@ const styles = StyleSheet.create({
     },
     listItem: {
       flex: 1,
+      flexDirection: 'row',
       padding: 25,
       borderColor: '#ccc',
       borderBottomWidth: 0.5

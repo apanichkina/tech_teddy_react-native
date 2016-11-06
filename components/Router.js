@@ -53,14 +53,6 @@ const device = new Realm({
 });
 
 global.device = false;
-global.alarm = {
-    days: [false, false, false, false, false, false, false],
-    active: false,
-    time: new Date(),
-    lightActive: false,
-    vibroActive: false,
-    soundActive: false
-}
 
 const strings = {
   title: 'Сказки',

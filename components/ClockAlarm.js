@@ -9,17 +9,33 @@ import {
 import { Actions } from 'react-native-router-flux';
 import DateTimePicker from 'react-native-modal-datetime-picker'
 import Toast from '@remobile/react-native-toast'
-import BluetoothSerial from 'react-native-bluetooth-hc05'
+import Button from "react-native-button";
+// import BluetoothSerial from 'react-native-bluetooth-hc05'
+
+import TeddyBluetooth from './TeddyBluetooth'
+import ToastError from './ToastError'
+var E = new ToastError('ClockAlarm')
 
 var strings = {
   days: ['П','В','С','Ч','П','С','В'],
-  disconnected: 'LOST'
+  disconnected: 'LOST',
+  title: 'День & ночь'
 }
 
 export default class ClockAlarm extends Component {
 
   constructor (props) {
     super(props)
+
+    this.alarm = {
+      days: [false, false, false, false, false, false, false],
+      active: false,
+      time: new Date(),
+      lightActive: false,
+      vibroActive: false,
+      soundActive: false
+    }
+
     this.state = {
       incommingData: '',
       connected: true,
@@ -27,16 +43,15 @@ export default class ClockAlarm extends Component {
       end: false,
       isRefreshing: false,
       isDateTimePickerVisible: false,
-      time: this.timeToString(global.alarm.time),
-      days: global.alarm.days,
-      alarmActive: global.alarm.active,
-      lightActive: global.alarm.lightActive,
-      vibroActive: global.alarm.vibroActive,
-      soundActive: global.alarm.soundActive
+      timeHHMM: '00:00',
+      time: this.alarm.time,
+      days: this.alarm.days,
+      alarmActive: this.alarm.active,
+      lightActive: this.alarm.lightActive,
+      vibroActive: this.alarm.vibroActive,
+      soundActive: this.alarm.soundActive,
+      data: ''
     }
-
-    this.handler = this.handlerLost.bind(this)
-    this.read = this.readFunc.bind(this)
 
   }
 
@@ -53,128 +68,96 @@ export default class ClockAlarm extends Component {
   }
 
   toggleAlarm () {
-    global.alarm.active = !this.state.alarmActive
-    this.setState({ alarmActive: global.alarm.active })
-    this.sendTimeToDevice()
+    this.alarm.active = !this.state.alarmActive
+    this.setState({ alarmActive: this.alarm.active })
+    this.setAlarm()
   }
 
   toggleLight () {
-    global.alarm.lightActive = !this.state.lightActive
-    this.setState({ lightActive: global.alarm.lightActive })
-    this.sendTimeToDevice()
+    this.alarm.lightActive = !this.state.lightActive
+    this.setState({ lightActive: this.alarm.lightActive })
+    this.setAlarm()
   }
 
   toggleVibro () {
-    global.alarm.vibroActive = !this.state.vibroActive
-    this.setState({ vibroActive: global.alarm.vibroActive })
-    this.sendTimeToDevice()
+    this.alarm.vibroActive = !this.state.vibroActive
+    this.setState({ vibroActive: this.alarm.vibroActive })
+    this.setAlarm()
   }
 
   toggleSound () {
-    global.alarm.soundActive = !this.state.soundActive
-    this.setState({ soundActive: global.alarm.soundActive })
-    this.sendTimeToDevice()
+    this.alarm.soundActive = !this.state.soundActive
+    this.setState({ soundActive: this.alarm.soundActive })
+    this.setAlarm()
   }
 
   getAlarmTime () {
-    BluetoothSerial.clear();
-    this.write('t\n')
-    this.setState({ incommingData: '' })
+    BL.getAlarmTime()
+      .then((res) => { this.parseTime(res) })
+      .catch((error) => { E.long(error, 'getAlarmTime') });
   }
 
-  sendTimeToDevice () {
+  parseTime (res) {
+    var d = res.charCodeAt(2)
+    var days = []
+    this.alarm.time.setHours(res.charCodeAt(0), res.charCodeAt(1))
+    var active = res.charCodeAt(3)
 
-    var t = global.alarm.time
-    var days = 0;
-     
     for (var i = 0; i < 7; ++i) {
-      days += (global.alarm.days[i] ? 1 : 0) << i
+      this.alarm.days[i] = (d >> i) & 0x01
     }
 
-    var active = (global.alarm.lightActive ? 1 : 0)
-    active += (global.alarm.vibroActive ? 1 : 0) << 1
-    active += (global.alarm.soundActive ? 1 : 0) << 2
-    active += (global.alarm.active ? 1 : 0) << 3
-
-    var h = String.fromCharCode(t.getHours())
-    var m = String.fromCharCode(t.getMinutes())
-    var d = String.fromCharCode(days)
-    var a = String.fromCharCode(active)
-    this.write('t'+h+m+d+a+'\n');
-  }
-
-  readFunc (data) {
-    this.setState({ incommingData: data.data })
-    var d = data.data
-    var days = d.charCodeAt(3)
-    var active = d.charCodeAt(4)
-    // Toast.showShortBottom(d.charCodeAt(1) + ' ' + d.charCodeAt(2) + ' ' + d.charCodeAt(3) + ' ' + d.charCodeAt(4))
-    for (var i = 0; i < 7; ++i) {
-      global.alarm.days[i] = (days >> i) & 0x01
-    }
-
-    global.alarm.lightActive = !!((active >> 0) & 0x01)
-    global.alarm.vibroActive = !!((active >> 1) & 0x01)
-    global.alarm.soundActive = !!((active >> 2) & 0x01)
-    global.alarm.active = !!((active >> 3) & 0x01)
-
-    global.alarm.time.setHours(d.charCodeAt(1), d.charCodeAt(2))
+    this.alarm.active = ((active >> 3) & 0x01)
+    this.alarm.lightActive = ((active >> 0) & 0x01)
+    this.alarm.vibroActive = ((active >> 1) & 0x01)
+    this.alarm.soundActive = ((active >> 2) & 0x01)
 
     this.setState({
-      time: this.timeToString(global.alarm.time),
-      alarmActive: global.alarm.active,
-      days: global.alarm.days,
-      lightActive: global.alarm.lightActive,
-      vibroActive: global.alarm.vibroActive,
-      soundActive: global.alarm.soundActive
+      time: this.alarm.time,
+      timeHHMM: this.timeToString(this.alarm.time),
+      days: this.alarm.days,
+      lightActive: this.alarm.lightActive,
+      vibroActive: this.alarm.vibroActive,
+      soundActive: this.alarm.soundActive,
+      alarmActive: this.alarm.active
     })
   }
 
+  setAlarm () {
+
+    var activate = {
+      clock: this.alarm.active,
+      lightActive: this.alarm.lightActive,
+      vibroActive: this.alarm.vibroActive,
+      soundActive: this.alarm.soundActive
+    }
+
+    BL.setAlarm(this.alarm.time, this.alarm.days, activate)
+      .then((res) => { this.parseTime(res) })
+      .catch((error) => { E.long(error, 'setAlarm') });
+  }
+
+  setTime () {
+    BL.setTime()
+      .then((res) => { this.setState({data: res}) })
+      .catch((error) => { E.long(error, 'setTime') });
+  }
+
   componentWillMount () {
-    BluetoothSerial.on('connectionLost', this.handler)
-    BluetoothSerial.on('data', this.read);
-    this.subscribe('\n');
   }
 
   componentDidMount () {
     setTimeout(this.getAlarmTime.bind(this), 500);
   }
 
-  handlerLost () {
-    Toast.showLongBottom(strings.disconnected)
-    this.setState({ connected: false })
-  }
-
   componentWillUnmount () {
-    this.unsubscribe()
-    Toast.showLongBottom('ALARM: unsubscribe')
-    BluetoothSerial.off('connectionLost', this.handler)
-    BluetoothSerial.off('data', this.read);
-  }
-
-  unsubscribe () {
-    BluetoothSerial.unsubscribe()
-    .then((res) => {})
-    .catch((err) => {})
-  }
-
-  subscribe () {
-    BluetoothSerial.subscribe('\n')
-    .then((res) => {})
-    .catch((err) => {})
-  }
-
-  write (data) {
-    BluetoothSerial.write(data)
-    .then((res) => {})
-    .catch((err) => Toast.showLongBottom(err))
   }
 
   _handleTimePicked (time) {
     // console.log('A date has been picked: ', time)
-    this.setState({time: this.timeToString(time)})
-    global.alarm.time = time;
-    this.sendTimeToDevice()
+    this.alarm.time = time
+    this.setState({time: this.alarm.time})
+    this.setAlarm()
     this._hideDateTimePicker()
   }
 
@@ -182,18 +165,21 @@ export default class ClockAlarm extends Component {
     var d = this.state.days
     d[day] = !d[day]
     this.setState({days: d})
-    global.alarm.days = d;
-    this.sendTimeToDevice()
+    this.alarm.days = d;
+    this.setAlarm()
   }
 
   render() {
       return (
         <View style={styles.container}>
+          <View style={styles.inline}>
+            <Text style={styles.heading}>{strings.title}</Text>
+          </View>
           <View style={styles.inlineH0} >
             <TouchableOpacity onPress={this._showDateTimePicker}>
               <Text
                 style={[styles.time, (this.state.alarmActive) ? styles.active : styles.inactive]}>
-                {this.state.time}
+                {this.state.timeHHMM}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={this.toggleAlarm.bind(this)}>
@@ -238,6 +224,10 @@ export default class ClockAlarm extends Component {
                 source={require('../img/brightness_high_white_24dp.png')} />
             </TouchableOpacity>
           </View>
+
+          <Button onPress={this.setTime.bind(this)} >SYNC</Button>
+              <Text>{this.state.data}</Text>
+
         </View>
       )
   }
@@ -247,7 +237,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#ffffff',
-        padding: 20
+        paddingBottom: 50
     },
     inlineH0: {
       flexDirection: 'row',
@@ -262,6 +252,12 @@ const styles = StyleSheet.create({
       height: 40,
       paddingHorizontal: 25,
       alignItems: 'center'
+    },
+    heading: {
+      fontWeight: 'bold',
+      fontSize: 24,
+      marginVertical: 10,
+      alignSelf: 'center'
     },
     alarm: {
       width: 40,
